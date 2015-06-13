@@ -7,6 +7,8 @@ for Unix-like systems.
 
 ### Script dependencies
 
+- **[MakeSelf][makeself]** distribution (version >= 2.2). Type `./makeself.sh --version` to test your version.  
+  If you need an update version, please visit the [MakeSelf website][makeself] 
 
 
 ### Script compilation

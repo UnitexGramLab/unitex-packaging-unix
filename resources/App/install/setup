@@ -1,7 +1,7 @@
 #!/bin/sh
 # =============================================================================
 # Unitex/GramLab Unix-like Environments Setup Script
-# https://github.com/UnitexGramLab/unitex-packaging-posix
+# https://github.com/UnitexGramLab/unitex-packaging-unix
 # =============================================================================
 # Copyright (C) 2015 Université Paris-Est Marne-la-Vallée <unitex@univ-mlv.fr>
 # 
@@ -29,6 +29,18 @@
 # Script code must be ShellCheck-compliant @see http://www.shellcheck.net/about.html
 # for information about how to run ShellCheck locally
 # e.g shellcheck -s sh setup
+# =============================================================================
+# Constants
+# =============================================================================
+UNITEX_SETUP_LINE_STRING="======================================================================="
+UNITEX_SETUP_APP_DIR_NAME="App"                # App binaries directory name
+UNITEX_SETUP_SRC_DIR_NAME="Src"                # Sources directory name
+UNITEX_SETUP_CORE_SRC_DIR_NAME="C++"           # Core sources directory name
+UNITEX_SETUP_CORE_SRC_BUILD_DIR_NAME="build"   # Core build directory name
+UNITEX_SETUP_CORE_SRC_BIN_DIR_NAME="bin"       # Compiled binaries directory name
+UNITEX_SETUP_PLATFORM_DIR_NAME="platform"      # Setup binaries directory name
+UNITEX_SETUP_INSTALL_DIR_NAME="install"        # Setup install directory name
+UNITEX_SETUP_WORKSPACE_DIR_NAME="workspace"    # Workspace directory name
 # =============================================================================
 # Commands
 # =============================================================================
@@ -67,16 +79,16 @@ cd "$UNITEX_SETUP_APP_BASEDIR"
 UNITEX_SETUP_HOME_BASEDIR=$(cd -P -- .. && pwd -P)
 
 # Unitex-Gramlab/Src/C++
-UNITEX_SETUP_SOURCES_PATH="$UNITEX_SETUP_HOME_BASEDIR/Src/C++"
+UNITEX_SETUP_SOURCES_PATH="$UNITEX_SETUP_HOME_BASEDIR/$UNITEX_SETUP_SRC_DIR_NAME/$UNITEX_SETUP_CORE_SRC_DIR_NAME"
 
 # Unitex-Gramlab/Src/C++/build
-UNITEX_SETUP_SOURCES_BUILD_PATH="$UNITEX_SETUP_SOURCES_PATH/build"
+UNITEX_SETUP_SOURCES_BUILD_PATH="$UNITEX_SETUP_SOURCES_PATH/$UNITEX_SETUP_CORE_SRC_BUILD_DIR_NAME"
 
 # Unitex-Gramlab/Src/C++/bin
-UNITEX_SETUP_SOURCES_BIN_PATH="$UNITEX_SETUP_SOURCES_PATH/bin"
+UNITEX_SETUP_SOURCES_BIN_PATH="$UNITEX_SETUP_SOURCES_PATH/$UNITEX_SETUP_CORE_SRC_BIN_DIR_NAME"
 
 # /home/user/workspace/Unitex-Gramlab
-UNITEX_WORKSPACE_HOME_BASEDIR="$HOME/workspace/Unitex-Gramlab"
+UNITEX_WORKSPACE_HOME_BASEDIR="$HOME/$UNITEX_SETUP_WORKSPACE_DIR_NAME/Unitex-Gramlab"
 
 # /home/user/workspace/Unitex-Gramlab/Unitex
 UNITEX_WORKSPACE_PATH="$UNITEX_WORKSPACE_HOME_BASEDIR/Unitex"
@@ -90,12 +102,7 @@ UNITEX_WORKSPACE_CFG_FILE="$HOME/.unitex.cfg"
 
 # GramLab workspace configuration file
 # /home/user/.gramlab
-GRAMLAB_WORKSPACE_CFG_FILE="$HOME/.gramlab"      
-# =============================================================================
-# Constants
-# =============================================================================
-UNITEX_SETUP_LINE_STRING="======================================================================="
-UNITEX_SETUP_PLATFORM_DIR_NAME="platform"   # Setup binaries directory name
+GRAMLAB_WORKSPACE_CFG_FILE="$HOME/.gramlab"
 # =============================================================================
 # Support message
 # =============================================================================
@@ -128,13 +135,13 @@ unitex_setup_print_binaries_not_found_message() {
 # Check Unitex-Gramlab/App/install, Unitex-Gramlab/App and Unitex-Gramlab/README.txt
 # =============================================================================
 unitex_setup_check_path () {
-  local app=$(basename "$UNITEX_SETUP_APP_BASEDIR")
-  local app_path="$UNITEX_SETUP_HOME_BASEDIR/App"
-  local install=$(basename "$UNITEX_SETUP_INSTALL_BASEDIR")
-  local install_path="$app_path/install"
+  readonly app=$(basename "$UNITEX_SETUP_APP_BASEDIR")
+  readonly app_path="$UNITEX_SETUP_HOME_BASEDIR/$UNITEX_SETUP_APP_DIR_NAME"
+  readonly install=$(basename "$UNITEX_SETUP_INSTALL_BASEDIR")
+  readonly install_path="$app_path/$UNITEX_SETUP_INSTALL_DIR_NAME"
 
-  if [ x"$app"     != x"App"    -o \
-       x"$install" != x"install" ]; then
+  if [ x"$app"     != x"$UNITEX_SETUP_APP_DIR_NAME"    -o \
+       x"$install" != x"$UNITEX_SETUP_INSTALL_DIR_NAME" ]; then
     echo "$UNITEX_SETUP_LINE_STRING"
     echo "Warning: A valid Unitex/GramLab distribution was not detected"
     echo "Used paths:"
@@ -161,6 +168,7 @@ unitex_setup_check_path () {
 # Operating System Detection
 # =============================================================================
 unitex_setup_os_type_detection() {
+  # shellcheck disable=SC2039
   if [ -z "$OSTYPE" ]; then
    if [ ! -z "$UNITEX_SETUP_COMMAND_UNAME" ]; then
     OSTYPE=$($UNITEX_SETUP_COMMAND_UNAME | tr '[:upper:]' '[:lower:]')
@@ -173,6 +181,7 @@ unitex_setup_os_type_detection() {
    fi   #  [ ! -z $UNITEX_SETUP_COMMAND_UNAME ]
   fi  #  [ -z $OSTYPE ]; then
 
+  # shellcheck disable=SC2039
   readonly UNITEX_SETUP_OS_TYPE=$(case "$OSTYPE" in
     (cygwin*|msys*|mingw32*|win32*|windows*)    echo "win";;
     (darwin*)                                   echo "osx";;

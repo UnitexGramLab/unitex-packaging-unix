@@ -3,13 +3,7 @@
 > [Unitex/GramLab][unitex] is an open source, cross-platform, multilingual, lexicon- and grammar-based corpus processing suite.
 
 This script is used to create the [Unitex/GramLab][unitex] setup installers
-for Unix-like systems. 
-
-### Script dependencies
-
-- **[MakeSelf][makeself]** distribution (version >= 2.2). Type `./makeself.sh --version` to test your version.  
-  If you need an update version, please visit the [MakeSelf website][makeself] 
-
+for Unix-like systems.
 
 ### Script compilation
 Usage:  

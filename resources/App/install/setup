@@ -35,9 +35,9 @@
 UNITEX_SETUP_LINE_STRING="======================================================================="
 UNITEX_SETUP_APP_DIR_NAME="App"                # App binaries directory name
 UNITEX_SETUP_SRC_DIR_NAME="Src"                # Sources directory name
-UNITEX_SETUP_CORE_SRC_DIR_NAME="C++"           # Core sources directory name
-UNITEX_SETUP_CORE_SRC_BUILD_DIR_NAME="build"   # Core build directory name
-UNITEX_SETUP_CORE_SRC_BIN_DIR_NAME="bin"       # Compiled binaries directory name
+UNITEX_SETUP_SRC_CORE_DIR_NAME="C++"           # Core sources directory name
+UNITEX_SETUP_SRC_CORE_BUILD_DIR_NAME="build"   # Core build directory name
+UNITEX_SETUP_SRC_CORE_BIN_DIR_NAME="bin"       # Compiled binaries directory name
 UNITEX_SETUP_PLATFORM_DIR_NAME="platform"      # Setup binaries directory name
 UNITEX_SETUP_INSTALL_DIR_NAME="install"        # Setup install directory name
 UNITEX_SETUP_WORKSPACE_DIR_NAME="workspace"    # Workspace directory name
@@ -79,13 +79,13 @@ cd "$UNITEX_SETUP_APP_BASEDIR"
 UNITEX_SETUP_HOME_BASEDIR=$(cd -P -- .. && pwd -P)
 
 # Unitex-Gramlab/Src/C++
-UNITEX_SETUP_SOURCES_PATH="$UNITEX_SETUP_HOME_BASEDIR/$UNITEX_SETUP_SRC_DIR_NAME/$UNITEX_SETUP_CORE_SRC_DIR_NAME"
+UNITEX_SETUP_SOURCES_PATH="$UNITEX_SETUP_HOME_BASEDIR/$UNITEX_SETUP_SRC_DIR_NAME/$UNITEX_SETUP_SRC_CORE_DIR_NAME"
 
 # Unitex-Gramlab/Src/C++/build
-UNITEX_SETUP_SOURCES_BUILD_PATH="$UNITEX_SETUP_SOURCES_PATH/$UNITEX_SETUP_CORE_SRC_BUILD_DIR_NAME"
+UNITEX_SETUP_SOURCES_BUILD_PATH="$UNITEX_SETUP_SOURCES_PATH/$UNITEX_SETUP_SRC_CORE_BUILD_DIR_NAME"
 
 # Unitex-Gramlab/Src/C++/bin
-UNITEX_SETUP_SOURCES_BIN_PATH="$UNITEX_SETUP_SOURCES_PATH/$UNITEX_SETUP_CORE_SRC_BIN_DIR_NAME"
+UNITEX_SETUP_SOURCES_BIN_PATH="$UNITEX_SETUP_SOURCES_PATH/$UNITEX_SETUP_SRC_CORE_BIN_DIR_NAME"
 
 # /home/user/workspace/Unitex-Gramlab
 UNITEX_WORKSPACE_HOME_BASEDIR="$HOME/$UNITEX_SETUP_WORKSPACE_DIR_NAME/Unitex-Gramlab"
@@ -129,6 +129,17 @@ unitex_setup_print_binaries_not_found_message() {
   echo " [X] $UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OB"
   echo " [X] $UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OS"
   echo "$UNITEX_SETUP_LINE_STRING"  
+}
+
+# =============================================================================
+# Installation completed message
+# =============================================================================
+unitex_setup_installation_completed_message() {
+  echo "$UNITEX_SETUP_LINE_STRING"
+  echo "Unitex/GramLab installation has successfully been completed!"
+  echo "Installation directory: $UNITEX_SETUP_HOME_BASEDIR"
+  echo "Workspace directory   : $UNITEX_WORKSPACE_HOME_BASEDIR"
+  echo "$UNITEX_SETUP_LINE_STRING"
 }
 
 # =============================================================================
@@ -379,4 +390,5 @@ unitex_setup_arch_bits_detection
 unitex_setup_app_binaries_detection
 unitex_setup_app_binaries_links_creation
 unitex_setup_create_workspace_directories
+unitex_setup_installation_completed_message
 # =============================================================================

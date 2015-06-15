@@ -109,7 +109,7 @@ GRAMLAB_WORKSPACE_CFG_FILE="$HOME/.gramlab"
 unitex_setup_print_support_message() {
   echo "$UNITEX_SETUP_LINE_STRING"
   echo "If you are having problems building or running Unitex/Gramlab," 
-  echo "please feel free to post a support questions in the [community" 
+  echo "please feel free to post a support question on the [community" 
   echo "support forum](http://forum.unitexgramlab.org). Some general" 
   echo "advice about asking technical support questions can be found"
   echo "[here](http://www.catb.org/esr/faqs/smart-questions.html)."

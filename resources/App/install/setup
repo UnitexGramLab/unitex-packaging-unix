@@ -119,10 +119,10 @@ GRAMLAB_WORKSPACE_CFG_FILE="$HOME/.gramlab"
 unitex_setup_print_support_message() {
   echo "$UNITEX_SETUP_LINE_STRING"
   echo "If you are having problems building or running Unitex/Gramlab," 
-  echo "please feel free to post a support question on the [community" 
-  echo "support forum](http://forum.unitexgramlab.org). Some general" 
+  echo "please feel free to post a support question on the community" 
+  echo "support forum (http://forum.unitexgramlab.org). Some general" 
   echo "advice about asking technical support questions can be found"
-  echo "[here](http://www.catb.org/esr/faqs/smart-questions.html)"
+  echo "at http://www.catb.org/esr/faqs/smart-questions.html"
   echo "$UNITEX_SETUP_LINE_STRING"
 }
 
@@ -131,7 +131,7 @@ unitex_setup_print_support_message() {
 # =============================================================================
 unitex_setup_print_binaries_not_found_message() {
   echo "$UNITEX_SETUP_LINE_STRING"
-  echo "Warning: There are not currently precompiled binaries for your platform"
+  echo "WARNING: There are not currently precompiled binaries for your platform"
   echo "Detected operating system:  $UNITEX_SETUP_OS_TYPE"
   echo "Detected host architecture: $UNITEX_SETUP_ARCH_TYPE"
   echo "Tested paths:"
@@ -165,7 +165,7 @@ unitex_setup_check_path () {
        x"$install" != x"$UNITEX_SETUP_INSTALL_DIR_NAME" -o \
     ! -e "$UNITEX_SETUP_HOME_BASEDIR/README.txt" ]; then
     echo "$UNITEX_SETUP_LINE_STRING"
-    echo "Warning: A valid Unitex/GramLab distribution was not detected"
+    echo "WARNING: A valid Unitex/GramLab distribution was not detected"
     
     echo "Tested paths:"
     # Unitex-Gramlab/App
@@ -273,7 +273,7 @@ unitex_setup_compile_binaries() {
 
     if [ $exit_status -ne 0 ]; then
       echo "$UNITEX_SETUP_LINE_STRING"
-      echo "Fatal: Unitex/GramLab could not compile"
+      echo "FATAL: Unitex/GramLab could not compile"
       echo "Return status : $exit_status"
       unitex_setup_print_support_message
       exit 1
@@ -289,7 +289,7 @@ unitex_setup_compile_binaries() {
 
     cd "$UNITEX_SETUP_INSTALL_BASEDIR"
   else  # [ -d "$UNITEX_SETUP_SOURCES_BUILD_PATH" ...
-    echo "Fatal: Unitex/GramLab could not compile"
+    echo "FATAL: Unitex/GramLab could not compile"
     # Sources not found
     if [ ! -d "$UNITEX_SETUP_SOURCES_BUILD_PATH" ]; then
      echo "Unitex/GramLab core sources not found!"

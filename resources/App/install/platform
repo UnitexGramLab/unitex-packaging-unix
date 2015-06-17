@@ -1,0 +1,107 @@
+#!/bin/sh
+# =============================================================================
+# Unitex/GramLab Unix-like Environments Setup Script
+# https://github.com/UnitexGramLab/unitex-packaging-unix
+# =============================================================================
+# Copyright (C) 2015 Université Paris-Est Marne-la-Vallée <unitex@univ-mlv.fr>
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
+#
+# cristian.martinez@univ-paris-est.fr (martinec)
+# 
+# =============================================================================
+# This shell script must work in any POSIX-like system, including systems without 
+# bash. See this helpful document on writing portable shell scripts:
+# @see http://www.gnu.org/s/hello/manual/autoconf/Portable-Shell.htm
+# =============================================================================
+# Script code must be ShellCheck-compliant for information about how to run 
+# ShellCheck locally @see http://www.shellcheck.net/about.html
+# e.g shellcheck -s sh setup
+# =============================================================================
+# Commands
+# =============================================================================
+UNITEX_SETUP_COMMAND_ARCH=$(command -v arch  || echo "")
+UNITEX_SETUP_COMMAND_GETCONF=$(command -v getconf || echo "")
+UNITEX_SETUP_COMMAND_LSB_RELEASE=$(command -v lsb_release ||  echo "")
+UNITEX_SETUP_COMMAND_UNAME=$(command -v uname || echo "")
+
+# =============================================================================
+# Operating System Detection
+# =============================================================================
+unitex_setup_os_type_detection() {
+  # shellcheck disable=SC2039
+  if [ -z "$OSTYPE" ]; then
+   if [ ! -z "$UNITEX_SETUP_COMMAND_UNAME" ]; then
+    OSTYPE=$($UNITEX_SETUP_COMMAND_UNAME | tr '[:upper:]' '[:lower:]')
+   else
+     if [ ! -z "$UNITEX_SETUP_COMMAND_LSB_RELEASE" ]; then
+      OSTYPE=$($UNITEX_SETUP_COMMAND_LSB_RELEASE -si | tr '[:upper:]' '[:lower:]')
+     else
+      OSTYPE="unknown"
+     fi   # [ ! -z "$UNITEX_SETUP_COMMAND_LSB_RELEASE" ]
+   fi   #  [ ! -z $UNITEX_SETUP_COMMAND_UNAME ]
+  fi  #  [ -z $OSTYPE ]; then
+
+  # shellcheck disable=SC2039
+  readonly UNITEX_SETUP_OS_TYPE=$(case "$OSTYPE" in
+    (cygwin*|msys*|mingw32*|win32*|windows*)    echo "win";;
+    (darwin*)                                   echo "osx";;
+    (freebsd*|netbsd*|dragonfly*)               echo "bsd";;
+    (sunos*|solaris*)                           echo "sun";;
+    (linux*|*gnu*|*hurd*)                       echo "linux";;
+    (*)                                         echo "$OSTYPE";;
+  esac)
+}
+
+# =============================================================================
+# Architecture Detection
+# =============================================================================
+unitex_setup_arch_type_detection() {
+  if [ -z "$ARCHTYPE" ]; then
+    if [ ! -z "$UNITEX_SETUP_COMMAND_ARCH" ]; then
+      ARCHTYPE=$($UNITEX_SETUP_COMMAND_ARCH     | tr '[:upper:]' '[:lower:]')
+    else
+     if [ ! -z "$UNITEX_SETUP_COMMAND_UNAME" ]; then
+      ARCHTYPE=$($UNITEX_SETUP_COMMAND_UNAME -m | tr '[:upper:]' '[:lower:]')
+     else
+      ARCHTYPE="unknown"
+     fi  #  [ ! -z $UNITEX_SETUP_COMMAND_UNAME ]
+    fi  #  [ ! -z $UNITEX_SETUP_COMMAND_ARCH ]
+  fi  #  [ -z $ARCHTYPE ];
+
+  readonly UNITEX_SETUP_ARCH_TYPE=$(case "$ARCHTYPE" in
+    (i386|i486|i586|i686|Pentium*|AMD?Athlon*)  echo "i686";;
+    (x86_64|amd64)                              echo "x86_64";;
+    (sun4)                                      echo "sparc";;
+    (powerpc)                                   echo "ppc";;
+    (*)                                         echo "$ARCHTYPE";;
+  esac)
+}
+
+# =============================================================================
+# 32-bit or 64-bit
+# =============================================================================
+unitex_setup_arch_bits_detection() {
+  # A 64-bit CPU could have only installed a 32-bit OS. So do not use `uname -m`
+  if [ -z "$ARCHBITS" ]; then
+    if [ ! -z "$UNITEX_SETUP_COMMAND_GETCONF" ]; then
+      ARCHBITS=$($UNITEX_SETUP_COMMAND_GETCONF LONG_BIT | tr '[:upper:]' '[:lower:]')
+     else
+      ARCHBITS="unknown"
+    fi  #  [ ! -z $UNITEX_SETUP_COMMAND_GETCONF ]
+  fi  #  [ -z $ARCHTYPE ];
+
+  readonly UNITEX_SETUP_ARCH_BITS="$ARCHBITS"
+}

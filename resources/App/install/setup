@@ -26,13 +26,13 @@
 # bash. See this helpful document on writing portable shell scripts:
 # @see http://www.gnu.org/s/hello/manual/autoconf/Portable-Shell.htm
 # =============================================================================
-# Script code must be ShellCheck-compliant @see http://www.shellcheck.net/about.html
-# for information about how to run ShellCheck locally
+# Script code must be ShellCheck-compliant for information about how to run 
+# ShellCheck locally @see http://www.shellcheck.net/about.html
 # e.g shellcheck -s sh setup
 # =============================================================================
 # Constants
 # =============================================================================
-UNITEX_SETUP_LINE_STRING="======================================================================="
+UNITEX_SETUP_LINE_STRING=$(head -c 77 < /dev/zero | tr '\0' '=' || echo "")
 UNITEX_SETUP_APP_DIR_NAME="App"                # App binaries directory name
 UNITEX_SETUP_SRC_DIR_NAME="Src"                # Sources directory name
 UNITEX_SETUP_SRC_CORE_DIR_NAME="C++"           # Core sources directory name
@@ -44,30 +44,40 @@ UNITEX_SETUP_WORKSPACE_DIR_NAME="workspace"    # Workspace directory name
 # =============================================================================
 # Commands
 # =============================================================================
-UNITEX_SETUP_COMMAND_ARCH=$(command -v arch  || echo "")
 #UNITEX_SETUP_COMMAND_CURL=$(command -v curl  || echo "")
-UNITEX_SETUP_COMMAND_GETCONF=$(command -v getconf || echo "")
-UNITEX_SETUP_COMMAND_LSB_RELEASE=$(command -v lsb_release ||  echo "")
-UNITEX_SETUP_COMMAND_MAKE=$(command -v make  ||  echo "")
-UNITEX_SETUP_COMMAND_PRINTF=$(command -v  printf          ||\
-                              command -v  /usr/ucb/echo   ||\
-                              command -v  echo            || echo "")
-UNITEX_SETUP_COMMAND_UNAME=$(command -v uname || echo "")
+UNITEX_SETUP_COMMAND_MAKE=$(command -v make              || echo "")
+UNITEX_SETUP_COMMAND_PRINTF=$(command -v  printf         ||\
+                              command -v  /bin/echo      ||\
+                              command -v  /usr/ucb/echo  ||\
+                              command -v  echo           || echo "echo")
+# =============================================================================
+# Script working directory
+# =============================================================================
+
+# Working directory snippet from @source http://stackoverflow.com/a/17744637/2042871
+UNITEX_SETUP_INSTALL_SCRIPT=$(cd -P -- "$(dirname -- "$0")" && pwd -P) &&\
+UNITEX_SETUP_INSTALL_SCRIPT="$UNITEX_SETUP_INSTALL_SCRIPT/$(basename -- "$0")"
+
+# Resolve symlinks snippet from @source http://stackoverflow.com/a/697552/2042871
+while [ -h "$UNITEX_SETUP_INSTALL_SCRIPT" ]; do
+    UNITEX_SETUP_INSTALL_DIR=$(dirname -- "$UNITEX_SETUP_INSTALL_SCRIPT")
+    UNITEX_SETUP_INSTALL_SYM=$(readlink   "$UNITEX_SETUP_INSTALL_SCRIPT")
+    UNITEX_SETUP_INSTALL_SCRIPT="$(cd "$UNITEX_SETUP_INSTALL_DIR"  &&\
+                                  cd "$(dirname  -- "$UNITEX_SETUP_INSTALL_SYM")" &&\
+                                 pwd)/$(basename -- "$UNITEX_SETUP_INSTALL_SYM")"
+done  # [ -h "$UNITEX_SETUP_INSTALL_SCRIPT" ]
+
+# Set-up working directory 
+UNITEX_SETUP_INSTALL_BASEDIR="$(dirname  -- "$UNITEX_SETUP_INSTALL_SCRIPT")"
+
+# =============================================================================
+# Load dependencies
+# =============================================================================
+. "$UNITEX_SETUP_INSTALL_BASEDIR/platform"
+
 # =============================================================================
 # Setup paths
 # =============================================================================
-# Script working directory
-# Working directory snippet from @source http://stackoverflow.com/a/17744637/2042871
-UNITEX_SETUP_INSTALL_BASEDIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
-
-# Resolve symlinks snippet from @source http://stackoverflow.com/a/697552/2042871
-while [ -h "$UNITEX_SETUP_INSTALL_BASEDIR" ]; do
-    UNITEX_SETUP_INSTALL_DIR=$(dirname -- "$UNITEX_SETUP_INSTALL_BASEDIR")
-    UNITEX_SETUP_INSTALL_SYM=$(readlink   "$UNITEX_SETUP_INSTALL_BASEDIR")
-    UNITEX_SETUP_INSTALL_BASEDIR=$(cd "$UNITEX_SETUP_INSTALL_DIR"  &&\
-                   cd "$(dirname  -- "$UNITEX_SETUP_INSTALL_SYM")" && pwd)
-done  # [ -h "$UNITEX_SETUP_INSTALL_BASEDIR" ]
-
 # Unitex-Gramlab/App/install
 cd "$UNITEX_SETUP_INSTALL_BASEDIR"
 
@@ -112,7 +122,7 @@ unitex_setup_print_support_message() {
   echo "please feel free to post a support questions in the [community" 
   echo "support forum](http://forum.unitexgramlab.org). Some general" 
   echo "advice about asking technical support questions can be found"
-  echo "[here](http://www.catb.org/esr/faqs/smart-questions.html)."
+  echo "[here](http://www.catb.org/esr/faqs/smart-questions.html)"
   echo "$UNITEX_SETUP_LINE_STRING"
 }
 
@@ -124,10 +134,10 @@ unitex_setup_print_binaries_not_found_message() {
   echo "Warning: There are not currently precompiled binaries for your platform"
   echo "Detected operating system:  $UNITEX_SETUP_OS_TYPE"
   echo "Detected host architecture: $UNITEX_SETUP_ARCH_TYPE"
-  echo "Used paths:"
-  echo " [X] $UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OA"
-  echo " [X] $UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OB"
-  echo " [X] $UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OS"
+  echo "Tested paths:"
+  $UNITEX_SETUP_COMMAND_PRINTF " \r\033[2K [\033[0;31mX\033[0m] $UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OA\n"
+  $UNITEX_SETUP_COMMAND_PRINTF " \r\033[2K [\033[0;31mX\033[0m] $UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OB\n"
+  $UNITEX_SETUP_COMMAND_PRINTF " \r\033[2K [\033[0;31mX\033[0m] $UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OS\n"
   echo "$UNITEX_SETUP_LINE_STRING"  
 }
 
@@ -137,8 +147,8 @@ unitex_setup_print_binaries_not_found_message() {
 unitex_setup_installation_completed_message() {
   echo "$UNITEX_SETUP_LINE_STRING"
   echo "Unitex/GramLab installation has successfully been completed!"
-  echo "Installation directory: $UNITEX_SETUP_HOME_BASEDIR"
-  echo "Workspace directory   : $UNITEX_WORKSPACE_HOME_BASEDIR"
+  $UNITEX_SETUP_COMMAND_PRINTF " \r\033[2K [\033[00;32mOK\033[0m] Installation directory: $UNITEX_SETUP_HOME_BASEDIR\n"
+  $UNITEX_SETUP_COMMAND_PRINTF " \r\033[2K [\033[00;32mOK\033[0m] Workspace directory   : $UNITEX_WORKSPACE_HOME_BASEDIR\n"
   echo "$UNITEX_SETUP_LINE_STRING"
 }
 
@@ -151,13 +161,34 @@ unitex_setup_check_path () {
   readonly install=$(basename "$UNITEX_SETUP_INSTALL_BASEDIR")
   readonly install_path="$app_path/$UNITEX_SETUP_INSTALL_DIR_NAME"
 
-  if [ x"$app"     != x"$UNITEX_SETUP_APP_DIR_NAME"    -o \
-       x"$install" != x"$UNITEX_SETUP_INSTALL_DIR_NAME" ]; then
+  if [ x"$app"     != x"$UNITEX_SETUP_APP_DIR_NAME"     -o \
+       x"$install" != x"$UNITEX_SETUP_INSTALL_DIR_NAME" -o \
+    ! -e "$UNITEX_SETUP_HOME_BASEDIR/README.txt" ]; then
     echo "$UNITEX_SETUP_LINE_STRING"
     echo "Warning: A valid Unitex/GramLab distribution was not detected"
-    echo "Used paths:"
-    echo " [$( [ -d "$app_path" ]     && echo "OK" || echo "X" )] $app_path"
-    echo " [$( [ -d "$install_path" ] && echo "OK" || echo "X" )] $install_path"  
+    
+    echo "Tested paths:"
+    # Unitex-Gramlab/App
+    if [ -d "$app_path" ]; then
+      $UNITEX_SETUP_COMMAND_PRINTF "\r\033[2K [\033[00;32mOK\033[0m] $app_path\n" 
+    else
+      $UNITEX_SETUP_COMMAND_PRINTF "\r\033[2K [\033[0;31mX\033[0m] $app_path\n" 
+    fi
+    # Unitex-Gramlab/App/install
+    if [ -d "$install_path" ]; then
+      $UNITEX_SETUP_COMMAND_PRINTF "\r\033[2K [\033[00;32mOK\033[0m] $install_path\n" 
+    else
+      $UNITEX_SETUP_COMMAND_PRINTF "\r\033[2K [\033[0;31mX\033[0m] $install_path\n" 
+    fi
+
+    echo "Tested files:"
+    # Unitex-Gramlab/README.txt
+    if [  -e "$UNITEX_SETUP_HOME_BASEDIR/README.txt" ]; then
+      $UNITEX_SETUP_COMMAND_PRINTF "\r\033[2K [\033[00;32mOK\033[0m] $UNITEX_SETUP_HOME_BASEDIR/README.txt\n" 
+    else
+      $UNITEX_SETUP_COMMAND_PRINTF "\r\033[2K [\033[0;31mX\033[0m] $UNITEX_SETUP_HOME_BASEDIR/README.txt\n" 
+    fi   
+
     echo "$UNITEX_SETUP_LINE_STRING"  
     echo "Would you like to continue?"
     while true
@@ -173,75 +204,6 @@ unitex_setup_check_path () {
       fi
     done    
   fi  
-}
-
-# =============================================================================
-# Operating System Detection
-# =============================================================================
-unitex_setup_os_type_detection() {
-  # shellcheck disable=SC2039
-  if [ -z "$OSTYPE" ]; then
-   if [ ! -z "$UNITEX_SETUP_COMMAND_UNAME" ]; then
-    OSTYPE=$($UNITEX_SETUP_COMMAND_UNAME | tr '[:upper:]' '[:lower:]')
-   else
-     if [ ! -z "$UNITEX_SETUP_COMMAND_LSB_RELEASE" ]; then
-      OSTYPE=$($UNITEX_SETUP_COMMAND_LSB_RELEASE -si | tr '[:upper:]' '[:lower:]')
-     else
-      OSTYPE="unknown"
-     fi   # [ ! -z "$UNITEX_SETUP_COMMAND_LSB_RELEASE" ]
-   fi   #  [ ! -z $UNITEX_SETUP_COMMAND_UNAME ]
-  fi  #  [ -z $OSTYPE ]; then
-
-  # shellcheck disable=SC2039
-  readonly UNITEX_SETUP_OS_TYPE=$(case "$OSTYPE" in
-    (cygwin*|msys*|mingw32*|win32*|windows*)    echo "win";;
-    (darwin*)                                   echo "osx";;
-    (freebsd*|netbsd*|dragonfly*)               echo "bsd";;
-    (sunos*|solaris*)                           echo "sun";;
-    (linux*|*gnu*|*hurd*)                       echo "linux";;
-    (*)                                         echo "$OSTYPE";;
-  esac)
-}
-
-# =============================================================================
-# Architecture Detection
-# =============================================================================
-unitex_setup_arch_type_detection() {
-  if [ -z "$ARCHTYPE" ]; then
-    if [ ! -z "$UNITEX_SETUP_COMMAND_ARCH" ]; then
-      ARCHTYPE=$($UNITEX_SETUP_COMMAND_ARCH | tr '[:upper:]' '[:lower:]')
-    else
-     if [ ! -z "$UNITEX_SETUP_COMMAND_UNAME" ]; then
-      ARCHTYPE=$($UNITEX_SETUP_COMMAND_UNAME -m | tr '[:upper:]' '[:lower:]')
-     else
-      ARCHTYPE="unknown"
-     fi  #  [ ! -z $UNITEX_SETUP_COMMAND_UNAME ]
-    fi  #  [ ! -z $UNITEX_SETUP_COMMAND_ARCH ]
-  fi  #  [ -z $ARCHTYPE ];
-
-  readonly UNITEX_SETUP_ARCH_TYPE=$(case "$ARCHTYPE" in
-    (i386|i486|i586|i686|Pentium*|AMD?Athlon*)  echo "i686";;
-    (x86_64|amd64)                              echo "x86_64";;
-    (sun4)                                      echo "sparc";;
-    (powerpc)                                   echo "ppc";;
-    (*)                                         echo "$ARCHTYPE";;
-  esac)
-}
-
-# =============================================================================
-# 32-bit or 64-bit
-# =============================================================================
-unitex_setup_arch_bits_detection() {
-  # A 64-bit CPU could have only installed a 32-bit OS. So do not use `uname -m`
-  if [ -z "$ARCHBITS" ]; then
-    if [ ! -z "$UNITEX_SETUP_COMMAND_GETCONF" ]; then
-      ARCHBITS=$($UNITEX_SETUP_COMMAND_GETCONF LONG_BIT | tr '[:upper:]' '[:lower:]')
-     else
-      ARCHBITS="unknown"
-    fi  #  [ ! -z $UNITEX_SETUP_COMMAND_GETCONF ]
-  fi  #  [ -z $ARCHTYPE ];
-
-  readonly UNITEX_SETUP_ARCH_BITS="$ARCHBITS"
 }
 
 # =============================================================================
@@ -326,7 +288,20 @@ unitex_setup_compile_binaries() {
     fi  #  [ $exit_status -ne 0 ]; then
 
     cd "$UNITEX_SETUP_INSTALL_BASEDIR"
-  fi
+  else  # [ -d "$UNITEX_SETUP_SOURCES_BUILD_PATH" ...
+    echo "Fatal: Unitex/GramLab could not compile"
+    # Sources not found
+    if [ ! -d "$UNITEX_SETUP_SOURCES_BUILD_PATH" ]; then
+     echo "Unitex/GramLab core sources not found!"
+     $UNITEX_SETUP_COMMAND_PRINTF " \r\033[2K [\033[0;31mX\033[0m] $UNITEX_SETUP_SOURCES_BUILD_PATH\n"
+    fi
+    # make command not found
+    if [ -z "$UNITEX_SETUP_COMMAND_MAKE" ]; then
+     $UNITEX_SETUP_COMMAND_PRINTF " \r\033[2K [\033[0;31mX\033[0m] Command 'make' not found\n"
+    fi  
+    unitex_setup_print_support_message
+    exit 1    
+  fi  # [ -d "$UNITEX_SETUP_SOURCES_BUILD_PATH" ...
 }
 
 # =============================================================================
@@ -345,7 +320,9 @@ unitex_setup_app_binaries_links_creation() {
 
 
 # =============================================================================
-# 
+# Create workspace directories
+# e.g /home/user/workspace/Unitex-Gramlab/Unitex
+# e.g /home/user/workspace/Unitex-Gramlab/GramLab
 # =============================================================================
 unitex_setup_create_workspace_directories() {
   # Unitex workspace
@@ -361,8 +338,6 @@ unitex_setup_create_workspace_directories() {
       echo "$UNITEX_WORKSPACE_PATH" > "$UNITEX_WORKSPACE_CFG_FILE"
     fi  # [ -d "$UNITEX_WORKSPACE_PATH" ]
   fi  # [ ! -e "$UNITEX_WORKSPACE_CFG_FILE" -a ...
-  
-  #mkdir -p "$GRAMLAB_WORKSPACE_PATH"
 
   # GramLab workspace
   if [ ! -e "$GRAMLAB_WORKSPACE_CFG_FILE" -a\

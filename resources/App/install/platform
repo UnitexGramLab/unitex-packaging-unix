@@ -30,18 +30,56 @@
 # ShellCheck locally @see http://www.shellcheck.net/about.html
 # e.g shellcheck -s sh platform
 # =============================================================================
+# Constants
+# =============================================================================
+# shellcheck disable=SC2034
+UNITEX_SETUP_LINE_STRING=$(head -c 77 < /dev/zero | tr '\0' '=' || echo "")
+# shellcheck disable=SC2034
+UNITEX_SETUP_JAVA_DOWNLOAD_URL="http://www.java.com/en/download/manual.jsp"
+# shellcheck disable=SC2034
+UNITEX_SETUP_MINIMAL_JAVA_VERSION_STRING="1.7" # Minimal java version to run IDEs
+# =============================================================================
 # Commands
 # =============================================================================
-UNITEX_SETUP_COMMAND_ARCH=$(command -v arch                    || echo "")
-UNITEX_SETUP_COMMAND_GETCONF=$(command -v getconf              || echo "")
-UNITEX_SETUP_COMMAND_LSB_RELEASE=$(command -v lsb_release      || echo "")
-UNITEX_SETUP_COMMAND_UNAME=$(command -v uname                  || echo "")
-UNITEX_SETUP_COMMAND_JAVA=$(command -v "$JAVA_CMD"             ||\
-                            command -v "$JAVA_BINDIR/java"     ||\
-                            command -v "$JAVA_ROOT/java"       ||\
-                            command -v "$JRE_HOME/bin/java"    ||\
-                            command -v "$JAVA_HOME/bin/java"   ||\
-                            command -v "java"                  || echo "")
+# shellcheck disable=SC2034
+#UNITEX_SETUP_COMMAND_CURL=$(      command -v curl                  || echo "")
+# shellcheck disable=SC2034
+UNITEX_SETUP_COMMAND_ARCH=$(       command -v arch                  || echo "")
+# shellcheck disable=SC2034
+UNITEX_SETUP_COMMAND_GETCONF=$(    command -v getconf               || echo "")
+# shellcheck disable=SC2034
+UNITEX_SETUP_COMMAND_JAVA=$(       command -v "$JAVA_CMD"           ||\
+                                   command -v "$JAVA_BINDIR/java"   ||\
+                                   command -v "$JAVA_ROOT/java"     ||\
+                                   command -v "$JRE_HOME/bin/java"  ||\
+                                   command -v "$JAVA_HOME/bin/java" ||\
+                                   command -v "java"                || echo "")
+# shellcheck disable=SC2034
+UNITEX_SETUP_COMMAND_LSB_RELEASE=$(command -v lsb_release           || echo "")
+# shellcheck disable=SC2034
+UNITEX_SETUP_COMMAND_MAKE=$(       command -v make                  || echo "")
+# shellcheck disable=SC2034
+UNITEX_SETUP_COMMAND_OPEN_URL=$(   command -v "$BROWSER"            ||\
+                                   command -v xdg-open              ||\
+                                   command -v gnome-open            ||\
+                                   command -v x-www-browser         ||\
+                                   command -v firefox               ||\
+                                   command -v chromium-browser      ||\
+                                   command -v cygstart              ||\
+                                   command -v open                  || echo "echo")
+# shellcheck disable=SC2034
+UNITEX_SETUP_COMMAND_SH=$(         command -v bash                  ||\
+                                   command -v sh                    || echo "sh")
+# shellcheck disable=SC2034
+UNITEX_SETUP_COMMAND_PRINTF=$(     command -v printf                ||\
+                                   command -v /bin/echo             ||\
+                                   command -v /usr/ucb/echo         ||\
+                                   command -v echo                  || echo "echo")
+# shellcheck disable=SC2034
+UNITEX_SETUP_COMMAND_UNAME=$(      command -v uname                 || echo "")
+# shellcheck disable=SC2034
+#UNITEX_SETUP_COMMAND_WGET=$(      command -v wget                  || echo "")
+
 # =============================================================================
 # Operating System Detection
 # =============================================================================
@@ -190,12 +228,12 @@ unitex_setup_java_detection() {
    UNITEX_SETUP_JAVA_VENDOR="other"
 
    # Java(TM) Runtime Environment
-   "${UNITEX_SETUP_COMMAND_JAVA}" -version 2>&1 | grep -qi 'java(tm)' || {
+   "$UNITEX_SETUP_COMMAND_JAVA" -version 2>&1 | grep -qi 'java(tm)' || {
     UNITEX_SETUP_JAVA_VENDOR="sun"
    }   
 
    # OpenJDK Runtime Environment
-   "${UNITEX_SETUP_COMMAND_JAVA}" -version 2>&1 | grep -qi 'open' || {
+   "$UNITEX_SETUP_COMMAND_JAVA" -version 2>&1 | grep -qi 'open' || {
     UNITEX_SETUP_JAVA_VENDOR="open"
    }
 

@@ -28,7 +28,7 @@
 # =============================================================================
 # Script code must be ShellCheck-compliant for information about how to run 
 # ShellCheck locally @see http://www.shellcheck.net/about.html
-# e.g shellcheck -s sh setup
+# e.g shellcheck -s sh platform
 # =============================================================================
 # Commands
 # =============================================================================

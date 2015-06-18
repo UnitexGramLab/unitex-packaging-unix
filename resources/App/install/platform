@@ -24,7 +24,7 @@
 # =============================================================================
 # This shell script must work in any POSIX-like system, including systems without 
 # bash. See this helpful document on writing portable shell scripts:
-# @see http://www.gnu.org/s/hello/manual/autoconf/Portable-Shell.htm
+# @see http://www.gnu.org/s/hello/manual/autoconf/Portable-Shell.html
 # =============================================================================
 # Script code must be ShellCheck-compliant for information about how to run 
 # ShellCheck locally @see http://www.shellcheck.net/about.html
@@ -32,76 +32,179 @@
 # =============================================================================
 # Commands
 # =============================================================================
-UNITEX_SETUP_COMMAND_ARCH=$(command -v arch  || echo "")
-UNITEX_SETUP_COMMAND_GETCONF=$(command -v getconf || echo "")
-UNITEX_SETUP_COMMAND_LSB_RELEASE=$(command -v lsb_release ||  echo "")
-UNITEX_SETUP_COMMAND_UNAME=$(command -v uname || echo "")
-
+UNITEX_SETUP_COMMAND_ARCH=$(command -v arch                    || echo "")
+UNITEX_SETUP_COMMAND_GETCONF=$(command -v getconf              || echo "")
+UNITEX_SETUP_COMMAND_LSB_RELEASE=$(command -v lsb_release      || echo "")
+UNITEX_SETUP_COMMAND_UNAME=$(command -v uname                  || echo "")
+UNITEX_SETUP_COMMAND_JAVA=$(command -v "$JAVA_CMD"             ||\
+                            command -v "$JAVA_BINDIR/java"     ||\
+                            command -v "$JAVA_ROOT/java"       ||\
+                            command -v "$JRE_HOME/bin/java"    ||\
+                            command -v "$JAVA_HOME/bin/java"   ||\
+                            command -v "java"                  || echo "")
 # =============================================================================
 # Operating System Detection
 # =============================================================================
 unitex_setup_os_type_detection() {
-  # shellcheck disable=SC2039
-  if [ -z "$OSTYPE" ]; then
-   if [ ! -z "$UNITEX_SETUP_COMMAND_UNAME" ]; then
-    OSTYPE=$($UNITEX_SETUP_COMMAND_UNAME | tr '[:upper:]' '[:lower:]')
-   else
-     if [ ! -z "$UNITEX_SETUP_COMMAND_LSB_RELEASE" ]; then
-      OSTYPE=$($UNITEX_SETUP_COMMAND_LSB_RELEASE -si | tr '[:upper:]' '[:lower:]')
+  if [ ! -n "${UNITEX_SETUP_OS_TYPE+1}" ]; then
+    # shellcheck disable=SC2039
+    if [ -z "$OSTYPE" ]; then
+     if [ ! -z "$UNITEX_SETUP_COMMAND_UNAME" ]; then
+      OSTYPE=$($UNITEX_SETUP_COMMAND_UNAME | tr '[:upper:]' '[:lower:]')
      else
-      OSTYPE="unknown"
-     fi   # [ ! -z "$UNITEX_SETUP_COMMAND_LSB_RELEASE" ]
-   fi   #  [ ! -z $UNITEX_SETUP_COMMAND_UNAME ]
-  fi  #  [ -z $OSTYPE ]; then
+       if [ ! -z "$UNITEX_SETUP_COMMAND_LSB_RELEASE" ]; then
+        OSTYPE=$($UNITEX_SETUP_COMMAND_LSB_RELEASE -si | tr '[:upper:]' '[:lower:]')
+       else
+        OSTYPE="unknown"
+       fi   # [ ! -z "$UNITEX_SETUP_COMMAND_LSB_RELEASE" ]
+     fi   #  [ ! -z $UNITEX_SETUP_COMMAND_UNAME ]
+    fi  #  [ -z $OSTYPE ]; then
 
-  # shellcheck disable=SC2039
-  readonly UNITEX_SETUP_OS_TYPE=$(case "$OSTYPE" in
-    (cygwin*|msys*|mingw32*|win32*|windows*)    echo "win";;
-    (darwin*)                                   echo "osx";;
-    (freebsd*|netbsd*|dragonfly*)               echo "bsd";;
-    (sunos*|solaris*)                           echo "sun";;
-    (linux*|*gnu*|*hurd*)                       echo "linux";;
-    (*)                                         echo "$OSTYPE";;
-  esac)
+    # shellcheck disable=SC2039
+    readonly UNITEX_SETUP_OS_TYPE=$(case "$OSTYPE" in
+      (cygwin*|msys*|mingw32*|win32*|windows*)    echo "win";;
+      (darwin*)                                   echo "osx";;
+      (freebsd*|netbsd*|dragonfly*)               echo "bsd";;
+      (sunos*|solaris*)                           echo "sun";;
+      (linux*|*gnu*|*hurd*)                       echo "linux";;
+      (*)                                         echo "$OSTYPE";;
+    esac)
+    export OSTYPE 
+    export UNITEX_SETUP_OS_TYPE
+  fi
 }
 
 # =============================================================================
 # Architecture Detection
 # =============================================================================
 unitex_setup_arch_type_detection() {
-  if [ -z "$ARCHTYPE" ]; then
-    if [ ! -z "$UNITEX_SETUP_COMMAND_ARCH" ]; then
-      ARCHTYPE=$($UNITEX_SETUP_COMMAND_ARCH     | tr '[:upper:]' '[:lower:]')
-    else
-     if [ ! -z "$UNITEX_SETUP_COMMAND_UNAME" ]; then
-      ARCHTYPE=$($UNITEX_SETUP_COMMAND_UNAME -m | tr '[:upper:]' '[:lower:]')
-     else
-      ARCHTYPE="unknown"
-     fi  #  [ ! -z $UNITEX_SETUP_COMMAND_UNAME ]
-    fi  #  [ ! -z $UNITEX_SETUP_COMMAND_ARCH ]
-  fi  #  [ -z $ARCHTYPE ];
+  if [ ! -n "${UNITEX_SETUP_ARCH_TYPE+1}" ]; then
+    if [ -z "$ARCHTYPE" ]; then
+      if [ ! -z "$UNITEX_SETUP_COMMAND_UNAME" ]; then
+        ARCHTYPE=$($UNITEX_SETUP_COMMAND_UNAME -m | tr '[:upper:]' '[:lower:]')
+      else
+       if [ ! -z "$UNITEX_SETUP_COMMAND_ARCH" ]; then
+        ARCHTYPE=$($UNITEX_SETUP_COMMAND_ARCH     | tr '[:upper:]' '[:lower:]')
+       else
+        ARCHTYPE="unknown"
+       fi  #  [ ! -z $UNITEX_SETUP_COMMAND_UNAME ]
+      fi  #  [ ! -z $UNITEX_SETUP_COMMAND_ARCH ]
+    fi  #  [ -z $ARCHTYPE ];
 
-  readonly UNITEX_SETUP_ARCH_TYPE=$(case "$ARCHTYPE" in
-    (i386|i486|i586|i686|Pentium*|AMD?Athlon*)  echo "i686";;
-    (x86_64|amd64)                              echo "x86_64";;
-    (sun4)                                      echo "sparc";;
-    (powerpc)                                   echo "ppc";;
-    (*)                                         echo "$ARCHTYPE";;
-  esac)
+    readonly UNITEX_SETUP_ARCH_TYPE=$(case "$ARCHTYPE" in
+      (i386|i486|i586|i686|Pentium*|AMD?Athlon*)  echo "i686";;
+      (x86_64|amd64)                              echo "x86_64";;
+      (sun4)                                      echo "sparc";;
+      (powerpc)                                   echo "ppc";;
+      (*)                                         echo "$ARCHTYPE";;
+    esac)
+    export UNITEX_SETUP_ARCH_TYPE
+  fi
 }
 
 # =============================================================================
 # 32-bit or 64-bit
 # =============================================================================
 unitex_setup_arch_bits_detection() {
-  # A 64-bit CPU could have only installed a 32-bit OS. So do not use `uname -m`
-  if [ -z "$ARCHBITS" ]; then
-    if [ ! -z "$UNITEX_SETUP_COMMAND_GETCONF" ]; then
-      ARCHBITS=$($UNITEX_SETUP_COMMAND_GETCONF LONG_BIT | tr '[:upper:]' '[:lower:]')
-     else
-      ARCHBITS="unknown"
-    fi  #  [ ! -z $UNITEX_SETUP_COMMAND_GETCONF ]
-  fi  #  [ -z $ARCHTYPE ];
+  if [ ! -n "${UNITEX_SETUP_ARCH_BITS+1}" ]; then  
+    # A 64-bit CPU could have only installed a 32-bit OS. So do not use `uname -m`
+    if [ -z "$ARCHBITS" ]; then
+      if [ ! -z "$UNITEX_SETUP_COMMAND_GETCONF" ]; then
+        ARCHBITS=$($UNITEX_SETUP_COMMAND_GETCONF LONG_BIT | tr '[:upper:]' '[:lower:]')
+       else
+        ARCHBITS="unknown"
+      fi  #  [ ! -z $UNITEX_SETUP_COMMAND_GETCONF ]
+    fi  #  [ -z $ARCHTYPE ];
 
-  readonly UNITEX_SETUP_ARCH_BITS="$ARCHBITS"
+    readonly UNITEX_SETUP_ARCH_BITS="$ARCHBITS"
+    export   UNITEX_SETUP_ARCH_BITS
+  fi
+}
+
+# =============================================================================
+# Java Detection
+# UNITEX_SETUP_HAS_JAVA          [ 0, 1 ]
+# UNITEX_SETUP_JAVA_VENDOR       [ 'other', 'sun', 'open' ]
+# UNITEX_SETUP_COMMAND_JAVA      [ /path/to/bin/java ]
+# =============================================================================
+unitex_setup_java_detection() {
+ if [ ! -z "$UNITEX_SETUP_COMMAND_JAVA"  -a\
+      ! -n "${UNITEX_SETUP_JAVA_VENDOR+1}" ]; then
+   # Working directory snippet from @source http://stackoverflow.com/a/17744637/2042871
+   UNITEX_SETUP_COMMAND_JAVA=$(cd -P -- "$(dirname -- "$UNITEX_SETUP_COMMAND_JAVA")" && pwd -P) &&\
+   UNITEX_SETUP_COMMAND_JAVA="$UNITEX_SETUP_COMMAND_JAVA/java"
+  
+   # Resolve symlinks snippet from @source http://stackoverflow.com/a/697552/2042871
+   while [ -h "$UNITEX_SETUP_COMMAND_JAVA" ]; do
+       UNITEX_SETUP_COMMAND_JAVA_DIR=$(dirname -- "$UNITEX_SETUP_COMMAND_JAVA")
+       UNITEX_SETUP_COMMAND_JAVA_SYM=$(readlink   "$UNITEX_SETUP_COMMAND_JAVA")
+       UNITEX_SETUP_COMMAND_JAVA="$(cd "$UNITEX_SETUP_COMMAND_JAVA_DIR"  &&\
+                                     cd "$(dirname  -- "$UNITEX_SETUP_COMMAND_JAVA_SYM")" &&\
+                                    pwd)/$(basename -- "$UNITEX_SETUP_COMMAND_JAVA_SYM")"
+   done  # [ -h "$UNITEX_SETUP_COMMAND_JAVA" ]
+
+   # If command 'java -version' fails then java is unavailable
+   "$UNITEX_SETUP_COMMAND_JAVA" -version 2>&1 | grep -qe 'version' || {
+     export UNITEX_SETUP_HAS_JAVA=0
+     return 0;
+   }
+
+   # JAVA_CMD
+   if [ -z "$JAVA_CMD" ]; then
+     JAVA_CMD="$UNITEX_SETUP_COMMAND_JAVA"
+   fi
+
+   # JAVA_BINDIR
+   if [ -z "$JAVA_BINDIR" ]; then
+     JAVA_BINDIR="$(dirname "$UNITEX_SETUP_COMMAND_JAVA")"
+   fi
+
+   # Export java/bin path
+   echo "$PATH" | grep -q  "$JAVA_BINDIR" || {
+     export PATH=$PATH:$JAVA_BINDIR
+   }
+
+   # JAVA_ROOT
+   if [ -z "$JAVA_ROOT" ]; then
+     JAVA_ROOT="$(dirname "$(dirname "$UNITEX_SETUP_COMMAND_JAVA")")"
+   fi
+
+   # JAVA_HOME
+   if [ -z "$JAVA_HOME" ]; then
+     JAVA_HOME="$(dirname "$(dirname "$UNITEX_SETUP_COMMAND_JAVA")")"
+   fi
+
+   # JRE_HOME
+   if [ -z "$JRE_HOME" -a\
+        x"$(basename "$(dirname "$(dirname "$UNITEX_SETUP_COMMAND_JAVA")")")" =\
+        x"jre" ]; then
+     JRE_HOME="$(dirname "$(dirname "$UNITEX_SETUP_COMMAND_JAVA")")"
+   fi  
+
+   # JAVA_BINDIR/javac
+   if [ -z "$JDK_HOME" -a\
+        -x "$(dirname "$UNITEX_SETUP_COMMAND_JAVA")/javac" ]; then
+     JDK_HOME="$(dirname "$(dirname "$UNITEX_SETUP_COMMAND_JAVA")")"
+   fi
+   
+   UNITEX_SETUP_JAVA_VENDOR="other"
+
+   # Java(TM) Runtime Environment
+   "${UNITEX_SETUP_COMMAND_JAVA}" -version 2>&1 | grep -qi 'java(tm)' || {
+    UNITEX_SETUP_JAVA_VENDOR="sun"
+   }   
+
+   # OpenJDK Runtime Environment
+   "${UNITEX_SETUP_COMMAND_JAVA}" -version 2>&1 | grep -qi 'open' || {
+    UNITEX_SETUP_JAVA_VENDOR="open"
+   }
+
+   export UNITEX_SETUP_HAS_JAVA=1
+   export UNITEX_SETUP_JAVA_VENDOR
+   export UNITEX_SETUP_COMMAND_JAVA
+   return 1;
+ else
+   export UNITEX_SETUP_HAS_JAVA=0
+   return 0;
+ fi 
 }

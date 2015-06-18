@@ -221,13 +221,16 @@ unitex_setup_app_binaries_detection() {
   UNITEX_SETUP_PLATFORM_OS="$UNITEX_SETUP_OS_TYPE"
 
   UNITEX_SETUP_APP_BINARIES=""
-  if    [ -d "$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OA" ]; then
+  if    [ -d "$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OA" -a \
+    "$(ls -A "$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OA")" ]; then
     # e.g. platform/linux-i686, platform/linux-x86_64
     UNITEX_SETUP_APP_BINARIES="$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OA"
-  elif  [ -d "$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OB" ]; then
+  elif  [ -d "$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OB" -a \
+    "$(ls -A "$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OB")" ]; then
     # e.g. platform/linux32, platform/linux64
     UNITEX_SETUP_APP_BINARIES="$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OB"
-  elif  [ -d "$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OS" ]; then
+  elif  [ -d "$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OS" -a \
+    "$(ls -A "$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OS")" ]; then
     # e.g. platform/$UNITEX_SETUP_PLATFORM_OB
     UNITEX_SETUP_APP_BINARIES="$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OS"
   fi
@@ -278,13 +281,31 @@ unitex_setup_compile_binaries() {
       unitex_setup_print_support_message
       exit 1
     else
+      local installation_failed=0
       echo "$UNITEX_SETUP_LINE_STRING"
       echo "Info: Unitex/GramLab compilation completed successfully"
+      
       cd "$UNITEX_SETUP_APP_BASEDIR"
-      mkdir -p "$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OA"
-      cp -f "$UNITEX_SETUP_SOURCES_BIN_PATH"/* "$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OA"
-      UNITEX_SETUP_APP_BINARIES="$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OA"
-      echo "All binaries were copied to $UNITEX_SETUP_APP_BINARIES"
+      
+      # create platform directory
+      mkdir -p "$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OA" || {
+        installation_failed=1
+      }  
+
+      # copy binaries to the platform directory
+      cp -f "$UNITEX_SETUP_SOURCES_BIN_PATH"/* "$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OA" || {
+        installation_failed=1
+      }   
+      
+      if [ $installation_failed -eq 0 ]; then
+       UNITEX_SETUP_APP_BINARIES="$UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OA"
+       echo "All binaries were copied to $UNITEX_SETUP_APP_BINARIES"
+      else
+       echo "$UNITEX_SETUP_LINE_STRING"
+       echo "FATAL: Unitex/GramLab compiled binaries not found!"
+       unitex_setup_print_support_message
+       exit 1        
+      fi
     fi  #  [ $exit_status -ne 0 ]; then
 
     cd "$UNITEX_SETUP_INSTALL_BASEDIR"

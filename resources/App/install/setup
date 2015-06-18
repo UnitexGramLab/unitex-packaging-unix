@@ -63,8 +63,8 @@ UNITEX_SETUP_COMMAND_OPEN_URL=$(command -v "$BROWSER"       ||\
                                 command -v x-www-browser    ||\
                                 command -v firefox          ||\
                                 command -v chromium-browser ||\
-                                command -v open             ||\
-                                command -v cygstart         || echo "echo")
+                                command -v cygstart         ||\
+                                command -v open             || echo "echo")
 #UNITEX_SETUP_COMMAND_WGET=$(command -v wget              || echo "")
 # =============================================================================
 # Script working directory

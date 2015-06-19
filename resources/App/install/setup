@@ -49,10 +49,12 @@ UNITEX_WORKSPACE_CFG_FILE_NAME=".unitex.cfg"           # Unitex config file name
 GRAMLAB_WORKSPACE_CFG_FILE_NAME=".gramlab"             # GramLab config file name
 UNITEX_IDE_JAVA_FILE_NAME="Unitex.jar"                 # Unitex IDE executable
 GRAMLAB_IDE_JAVA_FILE_NAME="Gramlab.jar"               # Gramlab IDE executable
-UNITEX_DESKTOP_ENTRY_FILE_PREFIX="unitex-visual-ide"   # Default unitex-ide.desktop
+UNITEX_DESKTOP_ENTRY_FILE_PREFIX="unitex-visual-ide"   # Default unitex-visual-ide
+UNITEX_SHELL_FILE_PREFIX="Unitex"                      # Default Unitex
 UNITEX_DESKTOP_ENTRY_ICON_FILE_NAME="Unitex.ico"       # Default Unitex.ico
-GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX="gramlab-visual-ide" # Default gramlab-ide.desktop
+GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX="gramlab-visual-ide" # Default gramlab-ide
 GRAMLAB_DESKTOP_ENTRY_ICON_FILE_NAME="Unitex.ico"      # Default Unitex.ico
+GRAMLAB_SHELL_FILE_PREFIX="GramLab"                    # Default GramLab
 # =============================================================================
 # Script working directory
 # =============================================================================
@@ -395,26 +397,26 @@ unitex_setup_create_workspace_directories() {
 # =============================================================================
 unitex_setup_create_shell_launchers() {
 # unitex-ide.sh
-rm -f "$UNITEX_SETUP_APP_BASEDIR/${UNITEX_DESKTOP_ENTRY_FILE_PREFIX:?}.sh"
-cat > "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.sh" <<EOL
+rm -f "$UNITEX_SETUP_APP_BASEDIR/${UNITEX_SHELL_FILE_PREFIX:?}.sh"
+cat > "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_SHELL_FILE_PREFIX.sh" <<EOL
 #!/bin/sh
 # =============================================================================
 $UNITEX_SETUP_INSTALL_BASEDIR/$UNITEX_SETUP_JAVA_LAUNCH_SCRIPT $UNITEX_SETUP_APP_BASEDIR/$UNITEX_IDE_JAVA_FILE_NAME
 EOL
 
 # try to add execution permissions to unitex-ide.sh
-chmod a+x "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.sh"  > /dev/null 2>&1
+chmod a+x "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_SHELL_FILE_PREFIX.sh"  > /dev/null 2>&1
 
 # gramlab-ide.sh
-rm -f "$UNITEX_SETUP_APP_BASEDIR/${GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX:?}.sh"
-cat > "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX.sh" <<EOL
+rm -f "$UNITEX_SETUP_APP_BASEDIR/${GRAMLAB_SHELL_FILE_PREFIX:?}.sh"
+cat > "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_SHELL_FILE_PREFIX.sh" <<EOL
 #!/bin/sh
 # =============================================================================
 $UNITEX_SETUP_INSTALL_BASEDIR/$UNITEX_SETUP_JAVA_LAUNCH_SCRIPT $UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_IDE_JAVA_FILE_NAME
 EOL
 
 # try to add execution permissions to gramlab-ide.sh
-chmod a+x "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX.sh"  > /dev/null 2>&1
+chmod a+x "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_SHELL_FILE_PREFIX.sh"  > /dev/null 2>&1
 }
 
 
@@ -431,14 +433,14 @@ Encoding=UTF-8
 Type=Application
 Name=Unitex Visual IDE
 Comment=Click here to run $UNITEX_IDE_JAVA_FILE_NAME
-Exec=$UNITEX_SETUP_COMMAND_SH $UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.sh
+Exec=$UNITEX_SETUP_COMMAND_SH $UNITEX_SETUP_APP_BASEDIR/$UNITEX_SHELL_FILE_PREFIX.sh
 Path=$UNITEX_SETUP_APP_BASEDIR
 Icon=$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_ICON_FILE_NAME
 Terminal=false
 StartupNotify=true
 StartupWMClass=fr-umlv-unitex-Unitex
-Categories=Application;Development;IDE;Education;
-Keywords=NLP;Graphs;
+Categories=Application;Development;Education;IDE;Building;ComputerScience;Java
+Keywords=NLP;Graphs;Local Grammars;
 EOL
 
 # gramlab-ide.desktop
@@ -449,14 +451,14 @@ Encoding=UTF-8
 Type=Application
 Name=GramLab Visual IDE
 Comment=Click here to run $GRAMLAB_IDE_JAVA_FILE_NAME
-Exec=$UNITEX_SETUP_COMMAND_SH $UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX.sh
+Exec=$UNITEX_SETUP_COMMAND_SH $UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_SHELL_FILE_PREFIX.sh
 Path=$UNITEX_SETUP_APP_BASEDIR
 Icon=$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_ICON_FILE_NAME
 Terminal=false
 StartupNotify=true
 StartupWMClass=fr-gramlab-Main
-Categories=Application;Development;IDE;Education;
-Keywords=NLP;Graphs;
+Categories=Application;Development;Education;IDE;Building;ComputerScience;Java
+Keywords=NLP;Graphs;Local Grammars;
 EOL
 
 # try to add execution permissions to the desktop entries

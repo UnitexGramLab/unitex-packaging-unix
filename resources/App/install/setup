@@ -420,38 +420,46 @@ unitex_setup_create_desktop_entries() {
 rm -f "$UNITEX_SETUP_APP_BASEDIR/${UNITEX_DESKTOP_ENTRY_FILE_PREFIX:?}.desktop"
 cat > "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.desktop" <<EOL
 [Desktop Entry]
+Encoding=UTF-8
 Type=Application
 Name=Unitex Visual IDE
 Comment=Click here to run $UNITEX_IDE_JAVA_FILE_NAME
 Exec=$UNITEX_SETUP_COMMAND_SH $UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.sh
+Path=$UNITEX_SETUP_APP_BASEDIR
 Icon=$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_ICON_FILE_NAME
 Terminal=false
-Categories=Development;Education
+StartupNotify=true
+StartupWMClass=fr-umlv-unitex-Unitex
+Categories=Application;Development;IDE;Education;
+Keywords=NLP;Graphs;
 EOL
-
-# try to add execution permissions to unitex-ide.desktop
-chmod +x "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.desktop"  > /dev/null 2>&1
 
 # gramlab-ide.desktop
 rm -f "$UNITEX_SETUP_APP_BASEDIR/${GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX:?}.desktop"
 cat > "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX.desktop" <<EOL
 [Desktop Entry]
+Encoding=UTF-8
 Type=Application
 Name=GramLab Visual IDE
 Comment=Click here to run $GRAMLAB_IDE_JAVA_FILE_NAME
 Exec=$UNITEX_SETUP_COMMAND_SH $UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX.sh
+Path=$UNITEX_SETUP_APP_BASEDIR
 Icon=$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_ICON_FILE_NAME
 Terminal=false
-Categories=Development;Education
+StartupNotify=true
+StartupWMClass=fr-gramlab-Main
+Categories=Application;Development;IDE;Education;
+Keywords=NLP;Graphs;
 EOL
 
-# try to add execution permissions to gramlab-ide.desktop
+# try to add execution permissions to the desktop entries
+chmod +x "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.desktop"   > /dev/null 2>&1
 chmod +x "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX.desktop"  > /dev/null 2>&1
 
-# try to move shortcuts inside of share/applications
+# try to move the desktop entries inside of share/applications
 if [ -d "$HOME/.local/share/applications" ]; then
- mv -f "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.desktop" "$HOME/.local/share/applications"   > /dev/null 2>&1  
- mv -f "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX.desktop" "$HOME/.local/share/applications"  > /dev/null 2>&1
+ mv -f "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.desktop"  "$HOME/.local/share/applications"   > /dev/null 2>&1
+ mv -f "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX.desktop" "$HOME/.local/share/applications"   > /dev/null 2>&1
 fi
 }
 
@@ -463,7 +471,7 @@ unitex_setup_installation_completed_message() {
   echo "Unitex/GramLab installation has successfully been completed!"
   if [ ! -n "${UNITEX_SETUP_JAVA_VENDOR+1}" ]; then
    $UNITEX_SETUP_COMMAND_PRINTF   " \r\033[2K [\033[0;31mXX\033[0m] Java bin directory     : Java not found!\n"
-   $UNITEX_SETUP_COMMAND_OPEN_URL "$UNITEX_SETUP_JAVA_DOWNLOAD_URL" > /dev/null 2>&1 
+   $UNITEX_SETUP_COMMAND_OPEN_URL "$UNITEX_SETUP_JAVA_DOWNLOAD_URL" > /dev/null 2>&1
   else
    $UNITEX_SETUP_COMMAND_PRINTF   " \r\033[2K [\033[00;32mOK\033[0m] Java bin directory     : $JAVA_BINDIR\n"
   fi   

@@ -110,7 +110,7 @@ unitex_jar_launch_setup_classpath() {
 
   # OSTYPE (re)defined by unitex_setup_os_type_detection
   # shellcheck disable=SC2039
-  local -r UNITEX_SETUP_OS_IS_CYGWIN=$(case "$OSTYPE" in
+  UNITEX_SETUP_OS_IS_CYGWIN=$(case "$OSTYPE" in
     (*cygwin*)   echo "1";;
     (*)          echo "0";;
   esac)

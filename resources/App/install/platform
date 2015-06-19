@@ -33,7 +33,7 @@
 # Constants
 # =============================================================================
 # shellcheck disable=SC2034
-UNITEX_SETUP_LINE_STRING=$(head -c 77 < /dev/zero | tr '\0' '=' || echo "")
+UNITEX_SETUP_LINE_STRING=$(head -c 80 < /dev/zero | tr '\0' '=' || echo "")
 # shellcheck disable=SC2034
 UNITEX_SETUP_JAVA_DOWNLOAD_URL="http://www.java.com/en/download/manual.jsp"
 # shellcheck disable=SC2034
@@ -246,3 +246,23 @@ unitex_setup_java_detection() {
    return 0;
  fi 
 }
+
+# =============================================================================
+# Portable echo function
+# @source http://www.etalabs.net/sh_tricks.html
+# =============================================================================
+echo () (
+  fmt=%s end=\\n IFS=" "
+
+  while [ $# -gt 1 ] ; do
+   case "$1" in
+    [!-]*|-*[!ne]*) break;;
+    *ne*|*en*) fmt=%b end=;;
+    *n*) end=;;
+    *e*) fmt=%b;;
+   esac
+   shift
+  done
+
+  $UNITEX_SETUP_COMMAND_PRINTF "$fmt$end" "$*"
+)

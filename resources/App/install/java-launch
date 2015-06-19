@@ -117,9 +117,9 @@ unitex_jar_launch_setup_classpath() {
 
   # Running Java from Cygwin
   # @http://stackoverflow.com/a/16538153/2042871
-	if [ "$UNITEX_SETUP_OS_IS_CYGWIN" -ne 0 ]; then
-		UNITEX_JAR_LAUNCH_CLASSPATH=$(cygpath -mp "$UNITEX_JAR_LAUNCH_CLASSPATH")
-	fi
+  if [ "$UNITEX_SETUP_OS_IS_CYGWIN" -ne 0 ]; then
+    UNITEX_JAR_LAUNCH_CLASSPATH=$(cygpath -mp "$UNITEX_JAR_LAUNCH_CLASSPATH")
+  fi
 }  
 
 # =============================================================================
@@ -154,8 +154,8 @@ while [ -h "$UNITEX_JAR_LAUNCH_FILE" ]; do
     UNITEX_JAR_LAUNCH_FILE_DIR=$(dirname -- "$UNITEX_JAR_LAUNCH_FILE")
     UNITEX_JAR_LAUNCH_FILE_SYM=$(readlink   "$UNITEX_JAR_LAUNCH_FILE")
     UNITEX_JAR_LAUNCH_FILE="$(cd "$UNITEX_JAR_LAUNCH_FILE_DIR"  &&\
-                                  cd "$(dirname  -- "$UNITEX_JAR_LAUNCH_FILE_SYM")" &&\
-                                 pwd)/$(basename -- "$UNITEX_JAR_LAUNCH_FILE_SYM")"
+                              cd "$(dirname  -- "$UNITEX_JAR_LAUNCH_FILE_SYM")" &&\
+                             pwd)/$(basename -- "$UNITEX_JAR_LAUNCH_FILE_SYM")"
 done  # [ -h "$UNITEX_JAR_LAUNCH_FILE" ]
 
 # Set-up working directory 

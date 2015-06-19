@@ -366,6 +366,9 @@ unitex_setup_create_workspace_directories() {
       # Save the Unitex workspace configuration
       echo "$UNITEX_WORKSPACE_PATH" > "$UNITEX_WORKSPACE_CFG_FILE"
     fi  # [ -d "$UNITEX_WORKSPACE_PATH" ]
+  elif [  -e "$UNITEX_WORKSPACE_CFG_FILE" ]; then
+    # Try to read .unitex.cfg
+    UNITEX_WORKSPACE_PATH=$(head -n 1 "$UNITEX_WORKSPACE_CFG_FILE" | tail -n 1)
   fi  # [ ! -e "$UNITEX_WORKSPACE_CFG_FILE" -a ...
 
   # GramLab workspace
@@ -381,6 +384,9 @@ unitex_setup_create_workspace_directories() {
       echo "svn_repositories: 0"      > "$GRAMLAB_WORKSPACE_CFG_FILE"
       echo "$UNITEX_WORKSPACE_PATH"  >> "$GRAMLAB_WORKSPACE_CFG_FILE"
     fi  # [ -d "$GRAMLAB_WORKSPACE_PATH" ]
+  elif [  -e "$GRAMLAB_WORKSPACE_CFG_FILE" ]; then
+    # Try to read .unitex.cfg
+    GRAMLAB_WORKSPACE_PATH=$(head -n 2 "$GRAMLAB_WORKSPACE_CFG_FILE" | tail -n 1)
   fi  # [ ! -e "$GRAMLAB_WORKSPACE_CFG_FILE" -a ...
 }
 
@@ -397,7 +403,7 @@ $UNITEX_SETUP_INSTALL_BASEDIR/$UNITEX_SETUP_JAVA_LAUNCH_SCRIPT $UNITEX_SETUP_APP
 EOL
 
 # try to add execution permissions to unitex-ide.sh
-chmod +x "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.sh"  > /dev/null 2>&1
+chmod a+x "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.sh"  > /dev/null 2>&1
 
 # gramlab-ide.sh
 rm -f "$UNITEX_SETUP_APP_BASEDIR/${GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX:?}.sh"
@@ -408,15 +414,16 @@ $UNITEX_SETUP_INSTALL_BASEDIR/$UNITEX_SETUP_JAVA_LAUNCH_SCRIPT $UNITEX_SETUP_APP
 EOL
 
 # try to add execution permissions to gramlab-ide.sh
-chmod +x "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX.sh"  > /dev/null 2>&1
+chmod a+x "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX.sh"  > /dev/null 2>&1
 }
 
 
 # =============================================================================
 # Create desktop entries
 # =============================================================================
-unitex_setup_create_desktop_entries() {
-# unitex-ide.desktop
+unitex_setup_create_freedesktop_entries() {
+# @see http://standards.freedesktop.org/desktop-entry-spec/desktop-entry-spec-1.1.html
+if [ -d "$HOME/.local/share/applications" ]; then
 rm -f "$UNITEX_SETUP_APP_BASEDIR/${UNITEX_DESKTOP_ENTRY_FILE_PREFIX:?}.desktop"
 cat > "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.desktop" <<EOL
 [Desktop Entry]
@@ -453,13 +460,12 @@ Keywords=NLP;Graphs;
 EOL
 
 # try to add execution permissions to the desktop entries
-chmod +x "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.desktop"   > /dev/null 2>&1
-chmod +x "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX.desktop"  > /dev/null 2>&1
+chmod a+x "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.desktop"   > /dev/null 2>&1
+chmod a+x "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX.desktop"  > /dev/null 2>&1
 
 # try to move the desktop entries inside of share/applications
-if [ -d "$HOME/.local/share/applications" ]; then
- mv -f "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.desktop"  "$HOME/.local/share/applications"   > /dev/null 2>&1
- mv -f "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX.desktop" "$HOME/.local/share/applications"   > /dev/null 2>&1
+mv -f "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.desktop"  "$HOME/.local/share/applications"   > /dev/null 2>&1
+mv -f "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX.desktop" "$HOME/.local/share/applications"   > /dev/null 2>&1
 fi
 }
 
@@ -476,7 +482,8 @@ unitex_setup_installation_completed_message() {
    $UNITEX_SETUP_COMMAND_PRINTF   " \r\033[2K [\033[00;32mOK\033[0m] Java bin directory     : $JAVA_BINDIR\n"
   fi   
   $UNITEX_SETUP_COMMAND_PRINTF    " \r\033[2K [\033[00;32mOK\033[0m] Installation directory : $UNITEX_SETUP_HOME_BASEDIR\n"
-  $UNITEX_SETUP_COMMAND_PRINTF    " \r\033[2K [\033[00;32mOK\033[0m] Workspace directory    : $UNITEX_WORKSPACE_HOME_BASEDIR\n"
+  $UNITEX_SETUP_COMMAND_PRINTF    " \r\033[2K [\033[00;32mOK\033[0m] Unitex Workspace       : $UNITEX_WORKSPACE_PATH\n"
+  $UNITEX_SETUP_COMMAND_PRINTF    " \r\033[2K [\033[00;32mOK\033[0m] GramLab Workspace      : $GRAMLAB_WORKSPACE_PATH\n"
   echo "$UNITEX_SETUP_LINE_STRING"
 }
 
@@ -493,6 +500,6 @@ unitex_setup_app_binaries_detection
 unitex_setup_app_binaries_links_creation
 unitex_setup_create_workspace_directories
 unitex_setup_create_shell_launchers
-unitex_setup_create_desktop_entries
+unitex_setup_create_freedesktop_entries
 unitex_setup_installation_completed_message
 # =============================================================================

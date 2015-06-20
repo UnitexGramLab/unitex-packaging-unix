@@ -396,24 +396,28 @@ unitex_setup_create_workspace_directories() {
 # Create shell launchers
 # =============================================================================
 unitex_setup_change_permissions_shell_launchers() {
-# unitex-ide
+# create Unitex launcher if doesn't exist
+if [ ! -e "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_SHELL_FILE_NAME" ]; then
 rm -f "$UNITEX_SETUP_APP_BASEDIR/${UNITEX_SHELL_FILE_NAME:?}"
 cat > "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_SHELL_FILE_NAME" <<EOL
 #!/bin/sh
 # =============================================================================
 $UNITEX_SETUP_INSTALL_BASEDIR/$UNITEX_SETUP_JAVA_LAUNCH_SCRIPT $UNITEX_SETUP_APP_BASEDIR/$UNITEX_IDE_JAVA_FILE_NAME
 EOL
+fi  # [ ! -e "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_SHELL_FILE_NAME" ]
 
 # try to add execution permissions to unitex-ide
 chmod a+x "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_SHELL_FILE_NAME"  > /dev/null 2>&1
 
-# gramlab-ide
+# create GramLab launcher if doesn't exist
+if [ ! -e "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_SHELL_FILE_NAME" ]; then
 rm -f "$UNITEX_SETUP_APP_BASEDIR/${GRAMLAB_SHELL_FILE_NAME:?}"
 cat > "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_SHELL_FILE_NAME" <<EOL
 #!/bin/sh
 # =============================================================================
 $UNITEX_SETUP_INSTALL_BASEDIR/$UNITEX_SETUP_JAVA_LAUNCH_SCRIPT $UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_IDE_JAVA_FILE_NAME
 EOL
+fi  # [ ! -e "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_SHELL_FILE_NAME" ]
 
 # try to add execution permissions to gramlab-ide
 chmod a+x "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_SHELL_FILE_NAME"  > /dev/null 2>&1

@@ -30,72 +30,21 @@
 # ShellCheck locally @see http://www.shellcheck.net/about.html
 # e.g shellcheck -s sh platform
 # =============================================================================
-# Constants
-# =============================================================================
-# shellcheck disable=SC2034
-UNITEX_SETUP_LINE_STRING=$(head -c 80 < /dev/zero | tr '\0' '=' || echo "")
-# shellcheck disable=SC2034
-UNITEX_SETUP_JAVA_DOWNLOAD_URL="http://www.java.com/en/download/manual.jsp"
-# shellcheck disable=SC2034
-UNITEX_SETUP_MINIMAL_JAVA_VERSION_STRING="1.7" # Minimal java version to run IDEs
-# =============================================================================
-# Commands
-# =============================================================================
-# shellcheck disable=SC2034
-#UNITEX_SETUP_COMMAND_CURL=$(      command -v curl                  || echo "")
-# shellcheck disable=SC2034
-UNITEX_SETUP_COMMAND_ARCH=$(       command -v arch                  || echo "")
-# shellcheck disable=SC2034
-UNITEX_SETUP_COMMAND_GETCONF=$(    command -v getconf               || echo "")
-# shellcheck disable=SC2034
-UNITEX_SETUP_COMMAND_JAVA=$(       command -v "$JAVA_CMD"           ||\
-                                   command -v "$JAVA_BINDIR/java"   ||\
-                                   command -v "$JAVA_ROOT/java"     ||\
-                                   command -v "$JRE_HOME/bin/java"  ||\
-                                   command -v "$JAVA_HOME/bin/java" ||\
-                                   command -v "java"                || echo "")
-# shellcheck disable=SC2034
-UNITEX_SETUP_COMMAND_LSB_RELEASE=$(command -v lsb_release           || echo "")
-# shellcheck disable=SC2034
-UNITEX_SETUP_COMMAND_MAKE=$(       command -v make                  || echo "")
-# shellcheck disable=SC2034
-UNITEX_SETUP_COMMAND_OPEN_URL=$(   command -v "$BROWSER"            ||\
-                                   command -v xdg-open              ||\
-                                   command -v gnome-open            ||\
-                                   command -v x-www-browser         ||\
-                                   command -v firefox               ||\
-                                   command -v chromium-browser      ||\
-                                   command -v cygstart              ||\
-                                   command -v open                  || echo "echo")
-# shellcheck disable=SC2034
-UNITEX_SETUP_COMMAND_SH=$(         command -v bash                  ||\
-                                   command -v sh                    || echo "sh")
-# shellcheck disable=SC2034
-UNITEX_SETUP_COMMAND_PRINTF=$(     command -v printf                ||\
-                                   command -v /bin/echo             ||\
-                                   command -v /usr/ucb/echo         ||\
-                                   command -v echo                  || echo "echo")
-# shellcheck disable=SC2034
-UNITEX_SETUP_COMMAND_UNAME=$(      command -v uname                 || echo "")
-# shellcheck disable=SC2034
-#UNITEX_SETUP_COMMAND_WGET=$(      command -v wget                  || echo "")
-
-# =============================================================================
 # Operating System Detection
 # =============================================================================
 unitex_setup_detect_os_type() {
   if [ ! -n "${UNITEX_SETUP_OS_TYPE+1}" ]; then
     # shellcheck disable=SC2039
     if [ -z "$OSTYPE" ]; then
-     if [ ! -z "$UNITEX_SETUP_COMMAND_UNAME" ]; then
-      OSTYPE=$($UNITEX_SETUP_COMMAND_UNAME | tr '[:upper:]' '[:lower:]')
+     if [ ! -z "$UNITEX_HOST_COMMAND_UNAME" ]; then
+      OSTYPE=$($UNITEX_HOST_COMMAND_UNAME | tr '[:upper:]' '[:lower:]')
      else
-       if [ ! -z "$UNITEX_SETUP_COMMAND_LSB_RELEASE" ]; then
-        OSTYPE=$($UNITEX_SETUP_COMMAND_LSB_RELEASE -si | tr '[:upper:]' '[:lower:]')
+       if [ ! -z "$UNITEX_HOST_COMMAND_LSB_RELEASE" ]; then
+        OSTYPE=$($UNITEX_HOST_COMMAND_LSB_RELEASE -si | tr '[:upper:]' '[:lower:]')
        else
         OSTYPE="unknown"
-       fi   # [ ! -z "$UNITEX_SETUP_COMMAND_LSB_RELEASE" ]
-     fi   #  [ ! -z $UNITEX_SETUP_COMMAND_UNAME ]
+       fi   # [ ! -z "$UNITEX_HOST_COMMAND_LSB_RELEASE" ]
+     fi   #  [ ! -z $UNITEX_HOST_COMMAND_UNAME ]
     fi  #  [ -z $OSTYPE ]; then
 
     # shellcheck disable=SC2039
@@ -118,15 +67,15 @@ unitex_setup_detect_os_type() {
 unitex_setup_detect_arch_type() {
   if [ ! -n "${UNITEX_SETUP_ARCH_TYPE+1}" ]; then
     if [ -z "$ARCHTYPE" ]; then
-      if [ ! -z "$UNITEX_SETUP_COMMAND_UNAME" ]; then
-        ARCHTYPE=$($UNITEX_SETUP_COMMAND_UNAME -m | tr '[:upper:]' '[:lower:]')
+      if [ ! -z "$UNITEX_HOST_COMMAND_UNAME" ]; then
+        ARCHTYPE=$($UNITEX_HOST_COMMAND_UNAME -m | tr '[:upper:]' '[:lower:]')
       else
-       if [ ! -z "$UNITEX_SETUP_COMMAND_ARCH" ]; then
-        ARCHTYPE=$($UNITEX_SETUP_COMMAND_ARCH     | tr '[:upper:]' '[:lower:]')
+       if [ ! -z "$UNITEX_HOST_COMMAND_ARCH" ]; then
+        ARCHTYPE=$($UNITEX_HOST_COMMAND_ARCH     | tr '[:upper:]' '[:lower:]')
        else
         ARCHTYPE="unknown"
-       fi  #  [ ! -z $UNITEX_SETUP_COMMAND_UNAME ]
-      fi  #  [ ! -z $UNITEX_SETUP_COMMAND_ARCH ]
+       fi  #  [ ! -z $UNITEX_HOST_COMMAND_UNAME ]
+      fi  #  [ ! -z $UNITEX_HOST_COMMAND_ARCH ]
     fi  #  [ -z $ARCHTYPE ];
 
     readonly UNITEX_SETUP_ARCH_TYPE=$(case "$ARCHTYPE" in
@@ -147,11 +96,11 @@ unitex_setup_detect_arch_bits() {
   if [ ! -n "${UNITEX_SETUP_ARCH_BITS+1}" ]; then  
     # A 64-bit CPU could have only installed a 32-bit OS. So do not use `uname -m`
     if [ -z "$ARCHBITS" ]; then
-      if [ ! -z "$UNITEX_SETUP_COMMAND_GETCONF" ]; then
-        ARCHBITS=$($UNITEX_SETUP_COMMAND_GETCONF LONG_BIT | tr '[:upper:]' '[:lower:]')
+      if [ ! -z "$UNITEX_HOST_COMMAND_GETCONF" ]; then
+        ARCHBITS=$($UNITEX_HOST_COMMAND_GETCONF LONG_BIT | tr '[:upper:]' '[:lower:]')
        else
         ARCHBITS="unknown"
-      fi  #  [ ! -z $UNITEX_SETUP_COMMAND_GETCONF ]
+      fi  #  [ ! -z $UNITEX_HOST_COMMAND_GETCONF ]
     fi  #  [ -z $ARCHTYPE ];
 
     readonly UNITEX_SETUP_ARCH_BITS="$ARCHBITS"
@@ -163,38 +112,38 @@ unitex_setup_detect_arch_bits() {
 # Java Detection
 # UNITEX_SETUP_HAS_JAVA          [ 0, 1 ]
 # UNITEX_SETUP_JAVA_VENDOR       [ 'other', 'sun', 'open' ]
-# UNITEX_SETUP_COMMAND_JAVA      [ /path/to/bin/java ]
+# UNITEX_HOST_COMMAND_JAVA      [ /path/to/bin/java ]
 # =============================================================================
 unitex_setup_detect_java() {
- if [ ! -z "$UNITEX_SETUP_COMMAND_JAVA"  -a\
+ if [ ! -z "$UNITEX_HOST_COMMAND_JAVA"  -a\
       ! -n "${UNITEX_SETUP_JAVA_VENDOR+1}" ]; then
    # Working directory snippet from @source http://stackoverflow.com/a/17744637/2042871
-   UNITEX_SETUP_COMMAND_JAVA=$(cd -P -- "$(dirname -- "$UNITEX_SETUP_COMMAND_JAVA")" && pwd -P) &&\
-   UNITEX_SETUP_COMMAND_JAVA="$UNITEX_SETUP_COMMAND_JAVA/java"
+   UNITEX_HOST_COMMAND_JAVA=$(cd -P -- "$(dirname -- "$UNITEX_HOST_COMMAND_JAVA")" && pwd -P) &&\
+   UNITEX_HOST_COMMAND_JAVA="$UNITEX_HOST_COMMAND_JAVA/java"
   
    # Resolve symlinks snippet from @source http://stackoverflow.com/a/697552/2042871
-   while [ -h "$UNITEX_SETUP_COMMAND_JAVA" ]; do
-       UNITEX_SETUP_COMMAND_JAVA_DIR=$(dirname -- "$UNITEX_SETUP_COMMAND_JAVA")
-       UNITEX_SETUP_COMMAND_JAVA_SYM=$(readlink   "$UNITEX_SETUP_COMMAND_JAVA")
-       UNITEX_SETUP_COMMAND_JAVA="$(cd "$UNITEX_SETUP_COMMAND_JAVA_DIR"  &&\
-                                     cd "$(dirname  -- "$UNITEX_SETUP_COMMAND_JAVA_SYM")" &&\
-                                    pwd)/$(basename -- "$UNITEX_SETUP_COMMAND_JAVA_SYM")"
-   done  # [ -h "$UNITEX_SETUP_COMMAND_JAVA" ]
+   while [ -h "$UNITEX_HOST_COMMAND_JAVA" ]; do
+       UNITEX_HOST_COMMAND_JAVA_DIR=$(dirname -- "$UNITEX_HOST_COMMAND_JAVA")
+       UNITEX_HOST_COMMAND_JAVA_SYM=$(readlink   "$UNITEX_HOST_COMMAND_JAVA")
+       UNITEX_HOST_COMMAND_JAVA="$(cd "$UNITEX_HOST_COMMAND_JAVA_DIR"  &&\
+                                     cd "$(dirname  -- "$UNITEX_HOST_COMMAND_JAVA_SYM")" &&\
+                                    pwd)/$(basename -- "$UNITEX_HOST_COMMAND_JAVA_SYM")"
+   done  # [ -h "$UNITEX_HOST_COMMAND_JAVA" ]
 
    # If command 'java -version' fails then java is unavailable
-   "$UNITEX_SETUP_COMMAND_JAVA" -version 2>&1 | grep -qe 'version' || {
+   "$UNITEX_HOST_COMMAND_JAVA" -version 2>&1 | grep -qe 'version' || {
      export UNITEX_SETUP_HAS_JAVA=0
      return 0;
    }
 
    # JAVA_CMD
    if [ -z "$JAVA_CMD" ]; then
-     JAVA_CMD="$UNITEX_SETUP_COMMAND_JAVA"
+     JAVA_CMD="$UNITEX_HOST_COMMAND_JAVA"
    fi
 
    # JAVA_BINDIR
    if [ -z "$JAVA_BINDIR" ]; then
-     JAVA_BINDIR="$(dirname "$UNITEX_SETUP_COMMAND_JAVA")"
+     JAVA_BINDIR="$(dirname "$UNITEX_HOST_COMMAND_JAVA")"
    fi
 
    # Export java/bin path
@@ -204,65 +153,45 @@ unitex_setup_detect_java() {
 
    # JAVA_ROOT
    if [ -z "$JAVA_ROOT" ]; then
-     JAVA_ROOT="$(dirname "$(dirname "$UNITEX_SETUP_COMMAND_JAVA")")"
+     JAVA_ROOT="$(dirname "$(dirname "$UNITEX_HOST_COMMAND_JAVA")")"
    fi
 
    # JAVA_HOME
    if [ -z "$JAVA_HOME" ]; then
-     JAVA_HOME="$(dirname "$(dirname "$UNITEX_SETUP_COMMAND_JAVA")")"
+     JAVA_HOME="$(dirname "$(dirname "$UNITEX_HOST_COMMAND_JAVA")")"
    fi
 
    # JRE_HOME
    if [ -z "$JRE_HOME" -a\
-        x"$(basename "$(dirname "$(dirname "$UNITEX_SETUP_COMMAND_JAVA")")")" =\
+        x"$(basename "$(dirname "$(dirname "$UNITEX_HOST_COMMAND_JAVA")")")" =\
         x"jre" ]; then
-     JRE_HOME="$(dirname "$(dirname "$UNITEX_SETUP_COMMAND_JAVA")")"
+     JRE_HOME="$(dirname "$(dirname "$UNITEX_HOST_COMMAND_JAVA")")"
    fi  
 
    # JAVA_BINDIR/javac
    if [ -z "$JDK_HOME" -a\
-        -x "$(dirname "$UNITEX_SETUP_COMMAND_JAVA")/javac" ]; then
-     JDK_HOME="$(dirname "$(dirname "$UNITEX_SETUP_COMMAND_JAVA")")"
+        -x "$(dirname "$UNITEX_HOST_COMMAND_JAVA")/javac" ]; then
+     JDK_HOME="$(dirname "$(dirname "$UNITEX_HOST_COMMAND_JAVA")")"
    fi
    
    UNITEX_SETUP_JAVA_VENDOR="other"
 
    # Java(TM) Runtime Environment
-   "$UNITEX_SETUP_COMMAND_JAVA" -version 2>&1 | grep -qi 'java(tm)' || {
+   "$UNITEX_HOST_COMMAND_JAVA" -version 2>&1 | grep -qi 'java(tm)' || {
     UNITEX_SETUP_JAVA_VENDOR="sun"
    }   
 
    # OpenJDK Runtime Environment
-   "$UNITEX_SETUP_COMMAND_JAVA" -version 2>&1 | grep -qi 'open' || {
+   "$UNITEX_HOST_COMMAND_JAVA" -version 2>&1 | grep -qi 'open' || {
     UNITEX_SETUP_JAVA_VENDOR="open"
    }
 
    export UNITEX_SETUP_HAS_JAVA=1
    export UNITEX_SETUP_JAVA_VENDOR
-   export UNITEX_SETUP_COMMAND_JAVA
+   export UNITEX_HOST_COMMAND_JAVA
    return 1;
  else
    export UNITEX_SETUP_HAS_JAVA=0
    return 0;
  fi 
 }
-
-# =============================================================================
-# Portable echo function
-# @source http://www.etalabs.net/sh_tricks.html
-# =============================================================================
-echo () (
-  fmt=%s end=\\n IFS=" "
-
-  while [ $# -gt 1 ] ; do
-   case "$1" in
-    [!-]*|-*[!ne]*) break;;
-    *ne*|*en*) fmt=%b end=;;
-    *n*) end=;;
-    *e*) fmt=%b;;
-   esac
-   shift
-  done
-
-  $UNITEX_SETUP_COMMAND_PRINTF "$fmt$end" "$*"
-)

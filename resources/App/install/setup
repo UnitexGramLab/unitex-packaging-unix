@@ -32,58 +32,38 @@
 # =============================================================================
 # Constants
 # =============================================================================
-UNITEX_SETUP_SCRIPT_NAME=$(basename -- "$0")           # This script name
-UNITEX_SETUP_APP_DIR_NAME="App"                        # App binaries directory name
-UNITEX_SETUP_SRC_DIR_NAME="Src"                        # Sources directory name
-UNITEX_SETUP_SRC_CORE_DIR_NAME="C++"                   # Core sources directory name
-UNITEX_SETUP_SRC_CORE_BUILD_DIR_NAME="build"           # Core build directory name
-UNITEX_SETUP_SRC_CORE_BIN_DIR_NAME="bin"               # Compiled binaries directory name
-UNITEX_SETUP_PLATFORM_DIR_NAME="platform"              # Setup binaries directory name
-UNITEX_SETUP_INSTALL_DIR_NAME="install"                # Setup install directory name
-UNITEX_SETUP_JAVA_LAUNCH_SCRIPT="java-launcher"        # Default install/java-launcher
-UNITEX_SETUP_WORKSPACE_DIR_NAME="workspace"            # Workspace directory name
-UNITEX_WORKSPACE_HOME_NAME="Unitex-Gramlab"            # Default workspace/Unitex-Gramlab
-UNITEX_WORKSPACE_DIR_NAME="Unitex"                     # Default Unitex-Gramlab/Unitex
-GRAMLAB_WORKSPACE_DIR_NAME="GramLab"                   # Default Unitex-Gramlab/GramLab
-UNITEX_WORKSPACE_CFG_FILE_NAME=".unitex.cfg"           # Unitex config file name
-GRAMLAB_WORKSPACE_CFG_FILE_NAME=".gramlab"             # GramLab config file name
-UNITEX_IDE_JAVA_FILE_NAME="Unitex.jar"                 # Unitex IDE executable
-GRAMLAB_IDE_JAVA_FILE_NAME="Gramlab.jar"               # Gramlab IDE executable
-UNITEX_DESKTOP_ENTRY_FILE_PREFIX="unitex-visual-ide"   # Default unitex-visual-ide
-UNITEX_SHELL_FILE_NAME="Unitex"                        # Default Unitex
-UNITEX_DESKTOP_ENTRY_ICON_FILE_NAME="Unitex.ico"       # Default Unitex.ico
-GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX="gramlab-visual-ide" # Default gramlab-ide
-GRAMLAB_DESKTOP_ENTRY_ICON_FILE_NAME="Unitex.ico"      # Default Unitex.ico
-GRAMLAB_SHELL_FILE_NAME="GramLab"                      # Default GramLab
+UNITEX_SETUP_SCRIPT_NAME=$(basename -- "$0")                 # This script name
 # =============================================================================
 # Script working directory
 # =============================================================================
 # Working directory snippet from @source http://stackoverflow.com/a/17744637/2042871
-UNITEX_SETUP_INSTALL_SCRIPT=$(cd -P -- "$(dirname -- "$0")" && pwd -P) &&\
-UNITEX_SETUP_INSTALL_SCRIPT="$UNITEX_SETUP_INSTALL_SCRIPT/$UNITEX_SETUP_SCRIPT_NAME"
+UNITEX_SETUP_SCRIPT_FILE=$(cd -P -- "$(dirname -- "$0")" && pwd -P) &&\
+UNITEX_SETUP_SCRIPT_FILE="$UNITEX_SETUP_SCRIPT_FILE/$UNITEX_SETUP_SCRIPT_NAME"
 
 # Resolve symlinks snippet from @source http://stackoverflow.com/a/697552/2042871
-while [ -h "$UNITEX_SETUP_INSTALL_SCRIPT" ]; do
-    UNITEX_SETUP_INSTALL_DIR=$(dirname -- "$UNITEX_SETUP_INSTALL_SCRIPT")
-    UNITEX_SETUP_INSTALL_SYM=$(readlink   "$UNITEX_SETUP_INSTALL_SCRIPT")
-    UNITEX_SETUP_INSTALL_SCRIPT="$(cd "$UNITEX_SETUP_INSTALL_DIR"  &&\
-                                  cd "$(dirname  -- "$UNITEX_SETUP_INSTALL_SYM")" &&\
-                                 pwd)/$(basename -- "$UNITEX_SETUP_INSTALL_SYM")"
-done  # [ -h "$UNITEX_SETUP_INSTALL_SCRIPT" ]
+while [ -h "$UNITEX_SETUP_SCRIPT_FILE" ]; do
+    UNITEX_SETUP_SCRIPT_DIR=$(dirname -- "$UNITEX_SETUP_SCRIPT_FILE")
+    UNITEX_SETUP_SCRIPT_SYM=$(readlink   "$UNITEX_SETUP_SCRIPT_FILE")
+    UNITEX_SETUP_SCRIPT_FILE="$(cd "$UNITEX_SETUP_SCRIPT_DIR"  &&\
+                                  cd "$(dirname  -- "$UNITEX_SETUP_SCRIPT_SYM")" &&\
+                                 pwd)/$(basename -- "$UNITEX_SETUP_SCRIPT_SYM")"
+done  # [ -h "$UNITEX_SETUP_SCRIPT_FILE" ]
 
 # Set-up working directory 
-UNITEX_SETUP_INSTALL_BASEDIR="$(dirname  -- "$UNITEX_SETUP_INSTALL_SCRIPT")"
+UNITEX_SETUP_SCRIPT_BASEDIR="$(dirname  -- "$UNITEX_SETUP_SCRIPT_FILE")"
 
 # =============================================================================
 # Load dependencies
 # =============================================================================
-. "$UNITEX_SETUP_INSTALL_BASEDIR/platform"
+. "$UNITEX_SETUP_SCRIPT_BASEDIR/config"
+. "$UNITEX_SETUP_SCRIPT_BASEDIR/common"
+. "$UNITEX_SETUP_SCRIPT_BASEDIR/platform"
 
 # =============================================================================
 # Setup paths
 # =============================================================================
 # Unitex-Gramlab/App/install
-cd "$UNITEX_SETUP_INSTALL_BASEDIR"
+cd "$UNITEX_SETUP_SCRIPT_BASEDIR"
 
 # Unitex-Gramlab/App
 UNITEX_SETUP_APP_BASEDIR=$(cd -P -- .. && pwd -P)
@@ -139,9 +119,9 @@ unitex_setup_print_binaries_not_found_message() {
   echo "Detected operating system:  $UNITEX_SETUP_OS_TYPE"
   echo "Detected host architecture: $UNITEX_SETUP_ARCH_TYPE"
   echo "Tested paths:"
-  $UNITEX_SETUP_COMMAND_PRINTF " \r\033[2K [\033[0;31mXX\033[0m] $UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OA\n"
-  $UNITEX_SETUP_COMMAND_PRINTF " \r\033[2K [\033[0;31mXX\033[0m] $UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OB\n"
-  $UNITEX_SETUP_COMMAND_PRINTF " \r\033[2K [\033[0;31mXX\033[0m] $UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OS\n"
+  $UNITEX_HOST_COMMAND_PRINTF " \r\033[2K [\033[0;31mXX\033[0m] $UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OA\n"
+  $UNITEX_HOST_COMMAND_PRINTF " \r\033[2K [\033[0;31mXX\033[0m] $UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OB\n"
+  $UNITEX_HOST_COMMAND_PRINTF " \r\033[2K [\033[0;31mXX\033[0m] $UNITEX_SETUP_PLATFORM_DIR_NAME/$UNITEX_SETUP_PLATFORM_OS\n"
   echo "$UNITEX_SETUP_LINE_STRING"  
 }
 
@@ -167,7 +147,7 @@ unitex_setup_print_java_not_found_message() {
 unitex_setup_check_path () {
   readonly app=$(basename "$UNITEX_SETUP_APP_BASEDIR")
   readonly app_path="$UNITEX_SETUP_HOME_BASEDIR/$UNITEX_SETUP_APP_DIR_NAME"
-  readonly install=$(basename "$UNITEX_SETUP_INSTALL_BASEDIR")
+  readonly install=$(basename "$UNITEX_SETUP_SCRIPT_BASEDIR")
   readonly install_path="$app_path/$UNITEX_SETUP_INSTALL_DIR_NAME"
   readonly readme="$UNITEX_SETUP_HOME_BASEDIR/README.txt"
 
@@ -180,30 +160,30 @@ unitex_setup_check_path () {
     echo "Tested paths:"
     # Unitex-Gramlab/App
     if [ -d "$app_path" ]; then
-      $UNITEX_SETUP_COMMAND_PRINTF "\r\033[2K [\033[00;32mOK\033[0m] $app_path\n" 
+      $UNITEX_HOST_COMMAND_PRINTF "\r\033[2K [\033[00;32mOK\033[0m] $app_path\n" 
     else
-      $UNITEX_SETUP_COMMAND_PRINTF "\r\033[2K [\033[0;31mXX\033[0m] $app_path\n" 
+      $UNITEX_HOST_COMMAND_PRINTF "\r\033[2K [\033[0;31mXX\033[0m] $app_path\n" 
     fi
     # Unitex-Gramlab/App/install
     if [ -d "$install_path" ]; then
-      $UNITEX_SETUP_COMMAND_PRINTF "\r\033[2K [\033[00;32mOK\033[0m] $install_path\n" 
+      $UNITEX_HOST_COMMAND_PRINTF "\r\033[2K [\033[00;32mOK\033[0m] $install_path\n" 
     else
-      $UNITEX_SETUP_COMMAND_PRINTF "\r\033[2K [\033[0;31mXX\033[0m] $install_path\n" 
+      $UNITEX_HOST_COMMAND_PRINTF "\r\033[2K [\033[0;31mXX\033[0m] $install_path\n" 
     fi
 
     echo "Tested files:"
     # Unitex-Gramlab/README.txt
     if [  -e "$readme" ]; then
-      $UNITEX_SETUP_COMMAND_PRINTF "\r\033[2K [\033[00;32mOK\033[0m] $readme\n" 
+      $UNITEX_HOST_COMMAND_PRINTF "\r\033[2K [\033[00;32mOK\033[0m] $readme\n" 
     else
-      $UNITEX_SETUP_COMMAND_PRINTF "\r\033[2K [\033[0;31mXX\033[0m] $readme\n" 
+      $UNITEX_HOST_COMMAND_PRINTF "\r\033[2K [\033[0;31mXX\033[0m] $readme\n" 
     fi   
 
     echo "$UNITEX_SETUP_LINE_STRING"  
     echo "Would you like to continue?"
     while true
     do
-      $UNITEX_SETUP_COMMAND_PRINTF "Please type y to accept, n otherwise: "
+      $UNITEX_HOST_COMMAND_PRINTF "Please type y to accept, n otherwise: "
       read yn
       if test x"$yn" = xn; then
         unitex_setup_print_support_message
@@ -222,13 +202,13 @@ unitex_setup_check_path () {
 unitex_setup_compile_binaries() {
   unitex_setup_print_binaries_not_found_message
   if [   -d "$UNITEX_SETUP_SOURCES_BUILD_PATH" -a\
-       ! -z "$UNITEX_SETUP_COMMAND_MAKE" ]; then
+       ! -z "$UNITEX_HOST_COMMAND_MAKE" ]; then
     
     echo "Would you like to compile Unitex/GramLab?'"
     
     while true
     do
-      $UNITEX_SETUP_COMMAND_PRINTF "Please type y to accept, n otherwise: "
+      $UNITEX_HOST_COMMAND_PRINTF "Please type y to accept, n otherwise: "
       read yn
       if test x"$yn" = xn; then
         unitex_setup_print_support_message
@@ -243,8 +223,8 @@ unitex_setup_compile_binaries() {
 
     {
       # execute make
-      eval "$UNITEX_SETUP_COMMAND_MAKE clean && $UNITEX_SETUP_COMMAND_MAKE UNITEXTOOLLOGGERONLY=yes" |\
-            tee "$UNITEX_SETUP_INSTALL_BASEDIR/build.log"
+      eval "$UNITEX_HOST_COMMAND_MAKE clean && $UNITEX_HOST_COMMAND_MAKE UNITEXTOOLLOGGERONLY=yes" |\
+            tee "$UNITEX_SETUP_SCRIPT_BASEDIR/build.log"
             
       # save return code
       exit_status=$?
@@ -284,17 +264,17 @@ unitex_setup_compile_binaries() {
       fi
     fi  #  [ $exit_status -ne 0 ]; then
 
-    cd "$UNITEX_SETUP_INSTALL_BASEDIR"
+    cd "$UNITEX_SETUP_SCRIPT_BASEDIR"
   else  # [ -d "$UNITEX_SETUP_SOURCES_BUILD_PATH" ...
     echo "FATAL: Unitex/GramLab could not compile"
     # Sources not found
     if [ ! -d "$UNITEX_SETUP_SOURCES_BUILD_PATH" ]; then
      echo "Unitex/GramLab core sources not found!"
-     $UNITEX_SETUP_COMMAND_PRINTF " \r\033[2K [\033[0;31mXX\033[0m] $UNITEX_SETUP_SOURCES_BUILD_PATH\n"
+     $UNITEX_HOST_COMMAND_PRINTF " \r\033[2K [\033[0;31mXX\033[0m] $UNITEX_SETUP_SOURCES_BUILD_PATH\n"
     fi
     # make command not found
-    if [ -z "$UNITEX_SETUP_COMMAND_MAKE" ]; then
-     $UNITEX_SETUP_COMMAND_PRINTF " \r\033[2K [\033[0;31mXX\033[0m] Command 'make' not found\n"
+    if [ -z "$UNITEX_HOST_COMMAND_MAKE" ]; then
+     $UNITEX_HOST_COMMAND_PRINTF " \r\033[2K [\033[0;31mXX\033[0m] Command 'make' not found\n"
     fi  
     unitex_setup_print_support_message
     exit 1    
@@ -357,9 +337,8 @@ unitex_setup_create_app_binaries_symbolic_links() {
 # =============================================================================
 unitex_setup_create_workspace_directories() {
   # Unitex workspace
-  if [ ! -e "$UNITEX_WORKSPACE_CFG_FILE" -a\
-       ! -d "$UNITEX_WORKSPACE_PATH" ]; then
-
+  # Try to create .unitex.cfg
+  if [ ! -e "$UNITEX_WORKSPACE_CFG_FILE" ]; then
     # Create the Unitex workspace directory   
     mkdir -p "$UNITEX_WORKSPACE_PATH"
 
@@ -368,15 +347,16 @@ unitex_setup_create_workspace_directories() {
       # Save the Unitex workspace configuration
       echo "$UNITEX_WORKSPACE_PATH" > "$UNITEX_WORKSPACE_CFG_FILE"
     fi  # [ -d "$UNITEX_WORKSPACE_PATH" ]
-  elif [  -e "$UNITEX_WORKSPACE_CFG_FILE" ]; then
-    # Try to read .unitex.cfg
-    UNITEX_WORKSPACE_PATH=$(head -n 1 "$UNITEX_WORKSPACE_CFG_FILE" | tail -n 1)
   fi  # [ ! -e "$UNITEX_WORKSPACE_CFG_FILE" -a ...
 
-  # GramLab workspace
-  if [ ! -e "$GRAMLAB_WORKSPACE_CFG_FILE" -a\
-       ! -d "$GRAMLAB_WORKSPACE_PATH" ]; then
+  # Try to read .unitex.cfg
+  if [ -e "$UNITEX_WORKSPACE_CFG_FILE" ]; then
+   UNITEX_WORKSPACE_PATH=$(head -n 1 "$UNITEX_WORKSPACE_CFG_FILE" | tail -n 1)
+  fi
 
+  # GramLab workspace
+  # Try to create .gramlab
+  if [ ! -e "$GRAMLAB_WORKSPACE_CFG_FILE" ]; then
     # Create the GRAMLAB workspace directory   
     mkdir -p "$GRAMLAB_WORKSPACE_PATH"
 
@@ -384,16 +364,18 @@ unitex_setup_create_workspace_directories() {
     if [ -d "$GRAMLAB_WORKSPACE_PATH" ]; then
       # Save the GRAMLAB workspace configuration
       echo "svn_repositories: 0"      > "$GRAMLAB_WORKSPACE_CFG_FILE"
-      echo "$UNITEX_WORKSPACE_PATH"  >> "$GRAMLAB_WORKSPACE_CFG_FILE"
+      echo "$GRAMLAB_WORKSPACE_PATH"  >> "$GRAMLAB_WORKSPACE_CFG_FILE"
     fi  # [ -d "$GRAMLAB_WORKSPACE_PATH" ]
-  elif [  -e "$GRAMLAB_WORKSPACE_CFG_FILE" ]; then
-    # Try to read .unitex.cfg
-    GRAMLAB_WORKSPACE_PATH=$(head -n 2 "$GRAMLAB_WORKSPACE_CFG_FILE" | tail -n 1)
   fi  # [ ! -e "$GRAMLAB_WORKSPACE_CFG_FILE" -a ...
+
+  # Try to read .gramlab
+  if [ -e "$GRAMLAB_WORKSPACE_CFG_FILE" ]; then
+   GRAMLAB_WORKSPACE_PATH=$(head -n 2 "$GRAMLAB_WORKSPACE_CFG_FILE" | tail -n 1)
+  fi
 }
 
 # =============================================================================
-# Create shell launchers
+# Setup shell launchers
 # =============================================================================
 unitex_setup_change_permissions_shell_launchers() {
 # create Unitex launcher if doesn't exist
@@ -402,7 +384,7 @@ rm -f "$UNITEX_SETUP_APP_BASEDIR/${UNITEX_SHELL_FILE_NAME:?}"
 cat > "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_SHELL_FILE_NAME" <<EOL
 #!/bin/sh
 # =============================================================================
-$UNITEX_SETUP_INSTALL_BASEDIR/$UNITEX_SETUP_JAVA_LAUNCH_SCRIPT $UNITEX_SETUP_APP_BASEDIR/$UNITEX_IDE_JAVA_FILE_NAME
+$UNITEX_SETUP_SCRIPT_BASEDIR/$UNITEX_JAVA_LAUNCHER_SCRIPT_NAME $UNITEX_SETUP_APP_BASEDIR/$UNITEX_IDE_FILE_NAME
 EOL
 fi  # [ ! -e "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_SHELL_FILE_NAME" ]
 
@@ -415,7 +397,7 @@ rm -f "$UNITEX_SETUP_APP_BASEDIR/${GRAMLAB_SHELL_FILE_NAME:?}"
 cat > "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_SHELL_FILE_NAME" <<EOL
 #!/bin/sh
 # =============================================================================
-$UNITEX_SETUP_INSTALL_BASEDIR/$UNITEX_SETUP_JAVA_LAUNCH_SCRIPT $UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_IDE_JAVA_FILE_NAME
+$UNITEX_SETUP_SCRIPT_BASEDIR/$UNITEX_JAVA_LAUNCHER_SCRIPT_NAME $UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_IDE_FILE_NAME
 EOL
 fi  # [ ! -e "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_SHELL_FILE_NAME" ]
 
@@ -436,8 +418,8 @@ cat > "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_FILE_PREFIX.desktop" <<EO
 Encoding=UTF-8
 Type=Application
 Name=Unitex Visual IDE
-Comment=Click here to run $UNITEX_IDE_JAVA_FILE_NAME
-Exec=$UNITEX_SETUP_COMMAND_SH $UNITEX_SETUP_APP_BASEDIR/$UNITEX_SHELL_FILE_NAME
+Comment=Click here to run $UNITEX_IDE_FILE_NAME
+Exec=$UNITEX_HOST_COMMAND_SH $UNITEX_SETUP_APP_BASEDIR/$UNITEX_SHELL_FILE_NAME
 Path=$UNITEX_SETUP_APP_BASEDIR
 Icon=$UNITEX_SETUP_APP_BASEDIR/$UNITEX_DESKTOP_ENTRY_ICON_FILE_NAME
 Terminal=false
@@ -454,8 +436,8 @@ cat > "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX.desktop" <<E
 Encoding=UTF-8
 Type=Application
 Name=GramLab Visual IDE
-Comment=Click here to run $GRAMLAB_IDE_JAVA_FILE_NAME
-Exec=$UNITEX_SETUP_COMMAND_SH $UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_SHELL_FILE_NAME
+Comment=Click here to run $GRAMLAB_IDE_FILE_NAME
+Exec=$UNITEX_HOST_COMMAND_SH $UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_SHELL_FILE_NAME
 Path=$UNITEX_SETUP_APP_BASEDIR
 Icon=$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_DESKTOP_ENTRY_ICON_FILE_NAME
 Terminal=false
@@ -482,14 +464,14 @@ unitex_setup_print_installation_completed_message() {
   echo "$UNITEX_SETUP_LINE_STRING"
   echo "Unitex/GramLab installation has successfully been completed!"
   if [ ! -n "${UNITEX_SETUP_JAVA_VENDOR+1}" ]; then
-   $UNITEX_SETUP_COMMAND_PRINTF   " \r\033[2K [\033[0;31mXX\033[0m] Java bin directory     : Java not found!\n"
-   $UNITEX_SETUP_COMMAND_OPEN_URL "$UNITEX_SETUP_JAVA_DOWNLOAD_URL" > /dev/null 2>&1
+   $UNITEX_HOST_COMMAND_PRINTF   " \r\033[2K [\033[0;31mXX\033[0m] Java bin directory     : Java not found!\n"
+   $UNITEX_HOST_COMMAND_OPEN_URL "$UNITEX_SETUP_JAVA_DOWNLOAD_URL" > /dev/null 2>&1
   else
-   $UNITEX_SETUP_COMMAND_PRINTF   " \r\033[2K [\033[00;32mOK\033[0m] Java bin directory     : $JAVA_BINDIR\n"
+   $UNITEX_HOST_COMMAND_PRINTF   " \r\033[2K [\033[00;32mOK\033[0m] Java bin directory     : $JAVA_BINDIR\n"
   fi   
-  $UNITEX_SETUP_COMMAND_PRINTF    " \r\033[2K [\033[00;32mOK\033[0m] Installation directory : $UNITEX_SETUP_HOME_BASEDIR\n"
-  $UNITEX_SETUP_COMMAND_PRINTF    " \r\033[2K [\033[00;32mOK\033[0m] Unitex Workspace       : $UNITEX_WORKSPACE_PATH\n"
-  $UNITEX_SETUP_COMMAND_PRINTF    " \r\033[2K [\033[00;32mOK\033[0m] GramLab Workspace      : $GRAMLAB_WORKSPACE_PATH\n"
+  $UNITEX_HOST_COMMAND_PRINTF    " \r\033[2K [\033[00;32mOK\033[0m] Installation directory : $UNITEX_SETUP_HOME_BASEDIR\n"
+  $UNITEX_HOST_COMMAND_PRINTF    " \r\033[2K [\033[00;32mOK\033[0m] Unitex Workspace       : $UNITEX_WORKSPACE_PATH\n"
+  $UNITEX_HOST_COMMAND_PRINTF    " \r\033[2K [\033[00;32mOK\033[0m] GramLab Workspace      : $GRAMLAB_WORKSPACE_PATH\n"
   echo "$UNITEX_SETUP_LINE_STRING"
 }
 

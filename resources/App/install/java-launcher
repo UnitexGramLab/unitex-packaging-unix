@@ -28,7 +28,7 @@
 # =============================================================================
 # Script code must be ShellCheck-compliant for information about how to run 
 # ShellCheck locally @see http://www.shellcheck.net/about.html
-# e.g shellcheck -s sh jar-launch
+# e.g shellcheck -s sh setup
 # =============================================================================
 # Constants
 # =============================================================================
@@ -37,25 +37,27 @@ UNITEX_JAVA_LAUNCHER_SCRIPT_NAME=$(basename -- "$0")
 # Script working directory
 # =============================================================================
 # Working directory snippet from @source http://stackoverflow.com/a/17744637/2042871
-UNITEX_JAVA_LAUNCHER_SCRIPT=$(cd -P -- "$(dirname -- "$0")" && pwd -P) &&\
-UNITEX_JAVA_LAUNCHER_SCRIPT="$UNITEX_JAVA_LAUNCHER_SCRIPT/$UNITEX_JAVA_LAUNCHER_SCRIPT_NAME)"
+UNITEX_JAVA_LAUNCHER_SCRIPT_FILE=$(cd -P -- "$(dirname -- "$0")" && pwd -P) &&\
+UNITEX_JAVA_LAUNCHER_SCRIPT_FILE="$UNITEX_JAVA_LAUNCHER_SCRIPT_FILE/$UNITEX_JAVA_LAUNCHER_SCRIPT_NAME"
 
 # Resolve symlinks snippet from @source http://stackoverflow.com/a/697552/2042871
-while [ -h "$UNITEX_JAVA_LAUNCHER_SCRIPT" ]; do
-    UNITEX_JAVA_LAUNCHER_DIR=$(dirname -- "$UNITEX_JAVA_LAUNCHER_SCRIPT")
-    UNITEX_JAVA_LAUNCHER_SYM=$(readlink   "$UNITEX_JAVA_LAUNCHER_SCRIPT")
-    UNITEX_JAVA_LAUNCHER_SCRIPT="$(cd "$UNITEX_JAVA_LAUNCHER_DIR"  &&\
-                                  cd "$(dirname  -- "$UNITEX_JAVA_LAUNCHER_SYM")" &&\
-                                 pwd)/$(basename -- "$UNITEX_JAVA_LAUNCHER_SYM")"
-done  # [ -h "$UNITEX_JAVA_LAUNCHER_SCRIPT" ]
+while [ -h "$UNITEX_JAVA_LAUNCHER_SCRIPT_FILE" ]; do
+    UNITEX_JAVA_LAUNCHER_SCRIPT_DIR=$(dirname -- "$UNITEX_JAVA_LAUNCHER_SCRIPT_FILE")
+    UNITEX_JAVA_LAUNCHER_SCRIPT_SYM=$(readlink   "$UNITEX_JAVA_LAUNCHER_SCRIPT_FILE")
+    UNITEX_JAVA_LAUNCHER_SCRIPT_FILE="$(cd "$UNITEX_JAVA_LAUNCHER_SCRIPT_DIR"  &&\
+                                  cd "$(dirname  -- "$UNITEX_JAVA_LAUNCHER_SCRIPT_SYM")" &&\
+                                 pwd)/$(basename -- "$UNITEX_JAVA_LAUNCHER_SCRIPT_SYM")"
+done  # [ -h "$UNITEX_JAVA_LAUNCHER_SCRIPT_FILE" ]
 
 # Set-up working directory 
-UNITEX_JAVA_LAUNCHER_BASEDIR="$(dirname  -- "$UNITEX_JAVA_LAUNCHER_SCRIPT")"
+UNITEX_JAVA_LAUNCHER_SCRIPT_BASEDIR="$(dirname  -- "$UNITEX_JAVA_LAUNCHER_SCRIPT_FILE")"
 
 # =============================================================================
 # Load dependencies
 # =============================================================================
-. "$UNITEX_JAVA_LAUNCHER_BASEDIR/platform"
+. "$UNITEX_JAVA_LAUNCHER_SCRIPT_BASEDIR/config"
+. "$UNITEX_JAVA_LAUNCHER_SCRIPT_BASEDIR/common"
+. "$UNITEX_JAVA_LAUNCHER_SCRIPT_BASEDIR/platform"
 
 # =============================================================================
 # Print usage message
@@ -78,7 +80,7 @@ unitex_java_launcher_print_java_not_found_message() {
     echo "or later installed on your system. To download Java online, please go to"
     echo "$UNITEX_SETUP_JAVA_DOWNLOAD_URL"
     echo "$UNITEX_SETUP_LINE_STRING"
-    $UNITEX_SETUP_COMMAND_OPEN_URL "$UNITEX_SETUP_JAVA_DOWNLOAD_URL" > /dev/null 2>&1 
+    $UNITEX_HOST_COMMAND_OPEN_URL "$UNITEX_SETUP_JAVA_DOWNLOAD_URL" > /dev/null 2>&1 
     exit 1;
   fi  
 }
@@ -174,6 +176,6 @@ unitex_java_launcher_setup_classpath
 cd "$UNITEX_JAVA_LAUNCHER_FILE_BASEDIR"
 
 # shellcheck disable=SC2086
-$UNITEX_SETUP_COMMAND_JAVA $UNITEX_JAVA_LAUNCHER_OPTIONS\
+$UNITEX_HOST_COMMAND_JAVA $UNITEX_JAVA_LAUNCHER_OPTIONS\
                            -cp  "$UNITEX_JAVA_LAUNCHER_CLASSPATH"\
                            -jar "$UNITEX_JAVA_LAUNCHER_FILE"

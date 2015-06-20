@@ -32,37 +32,37 @@
 # =============================================================================
 # Constants
 # =============================================================================
-UNITEX_JAR_LAUNCH_SCRIPT_NAME=$(basename -- "$0")
+UNITEX_JAVA_LAUNCHER_SCRIPT_NAME=$(basename -- "$0")
 # =============================================================================
 # Script working directory
 # =============================================================================
 # Working directory snippet from @source http://stackoverflow.com/a/17744637/2042871
-UNITEX_JAR_LAUNCH_SCRIPT=$(cd -P -- "$(dirname -- "$0")" && pwd -P) &&\
-UNITEX_JAR_LAUNCH_SCRIPT="$UNITEX_JAR_LAUNCH_SCRIPT/$UNITEX_JAR_LAUNCH_SCRIPT_NAME)"
+UNITEX_JAVA_LAUNCHER_SCRIPT=$(cd -P -- "$(dirname -- "$0")" && pwd -P) &&\
+UNITEX_JAVA_LAUNCHER_SCRIPT="$UNITEX_JAVA_LAUNCHER_SCRIPT/$UNITEX_JAVA_LAUNCHER_SCRIPT_NAME)"
 
 # Resolve symlinks snippet from @source http://stackoverflow.com/a/697552/2042871
-while [ -h "$UNITEX_JAR_LAUNCH_SCRIPT" ]; do
-    UNITEX_JAR_LAUNCH_DIR=$(dirname -- "$UNITEX_JAR_LAUNCH_SCRIPT")
-    UNITEX_JAR_LAUNCH_SYM=$(readlink   "$UNITEX_JAR_LAUNCH_SCRIPT")
-    UNITEX_JAR_LAUNCH_SCRIPT="$(cd "$UNITEX_JAR_LAUNCH_DIR"  &&\
-                                  cd "$(dirname  -- "$UNITEX_JAR_LAUNCH_SYM")" &&\
-                                 pwd)/$(basename -- "$UNITEX_JAR_LAUNCH_SYM")"
-done  # [ -h "$UNITEX_JAR_LAUNCH_SCRIPT" ]
+while [ -h "$UNITEX_JAVA_LAUNCHER_SCRIPT" ]; do
+    UNITEX_JAVA_LAUNCHER_DIR=$(dirname -- "$UNITEX_JAVA_LAUNCHER_SCRIPT")
+    UNITEX_JAVA_LAUNCHER_SYM=$(readlink   "$UNITEX_JAVA_LAUNCHER_SCRIPT")
+    UNITEX_JAVA_LAUNCHER_SCRIPT="$(cd "$UNITEX_JAVA_LAUNCHER_DIR"  &&\
+                                  cd "$(dirname  -- "$UNITEX_JAVA_LAUNCHER_SYM")" &&\
+                                 pwd)/$(basename -- "$UNITEX_JAVA_LAUNCHER_SYM")"
+done  # [ -h "$UNITEX_JAVA_LAUNCHER_SCRIPT" ]
 
 # Set-up working directory 
-UNITEX_JAR_LAUNCH_BASEDIR="$(dirname  -- "$UNITEX_JAR_LAUNCH_SCRIPT")"
+UNITEX_JAVA_LAUNCHER_BASEDIR="$(dirname  -- "$UNITEX_JAVA_LAUNCHER_SCRIPT")"
 
 # =============================================================================
 # Load dependencies
 # =============================================================================
-. "$UNITEX_JAR_LAUNCH_BASEDIR/platform"
+. "$UNITEX_JAVA_LAUNCHER_BASEDIR/platform"
 
 # =============================================================================
 # Print usage message
 # =============================================================================
 usage() {
     echo "Usage:"
-    echo "  $UNITEX_JAR_LAUNCH_SCRIPT_NAME JAR_FILE [JAVA_OPTIONS...]"
+    echo "  $UNITEX_JAVA_LAUNCHER_SCRIPT_NAME JAR_FILE [JAVA_OPTIONS...]"
     echo "Options:"
     echo "  -v|--verbosity=N  : manually set the verbosity level 0...7"
     exit 1
@@ -71,10 +71,10 @@ usage() {
 # =============================================================================
 # Java not found message
 # =============================================================================
-unitex_jar_launch_java_not_found_message() {
+unitex_java_launcher_print_java_not_found_message() {
   if [ ! -n "${UNITEX_SETUP_JAVA_VENDOR+1}" ]; then
     echo "$UNITEX_SETUP_LINE_STRING"
-    echo "WARNING: In order to run $UNITEX_JAR_LAUNCH_FILE_NAME, you need Java version $UNITEX_SETUP_MINIMAL_JAVA_VERSION_STRING"
+    echo "WARNING: In order to run $UNITEX_JAVA_LAUNCHER_FILE_NAME, you need Java version $UNITEX_SETUP_MINIMAL_JAVA_VERSION_STRING"
     echo "or later installed on your system. To download Java online, please go to"
     echo "$UNITEX_SETUP_JAVA_DOWNLOAD_URL"
     echo "$UNITEX_SETUP_LINE_STRING"
@@ -86,29 +86,29 @@ unitex_jar_launch_java_not_found_message() {
 # =============================================================================
 # Java classpath
 # =============================================================================
-unitex_jar_launch_setup_classpath() {
+unitex_java_launcher_setup_classpath() {
 	# add CLASSPATH
   if [ -n "${CLASSPATH+1}" ]; then
-  	UNITEX_JAR_LAUNCH_CLASSPATH="$UNITEX_JAR_LAUNCH_CLASSPATH:$CLASSPATH"
+  	UNITEX_JAVA_LAUNCHER_CLASSPATH="$UNITEX_JAVA_LAUNCHER_CLASSPATH:$CLASSPATH"
   fi
 
   # add main jar
-  UNITEX_JAR_LAUNCH_CLASSPATH="$UNITEX_JAR_LAUNCH_CLASSPATH:$UNITEX_JAR_LAUNCH_FILE_BASEDIR/$UNITEX_JAR_LAUNCH_FILE_NAME"
+  UNITEX_JAVA_LAUNCHER_CLASSPATH="$UNITEX_JAVA_LAUNCHER_CLASSPATH:$UNITEX_JAVA_LAUNCHER_FILE_BASEDIR/$UNITEX_JAVA_LAUNCHER_FILE_NAME"
 
-  # add UNITEX_JAR_LAUNCH_FILE_BASEDIR/classes/*
-  if [ -d "$UNITEX_JAR_LAUNCH_FILE_BASEDIR/classes" ]; then
-    UNITEX_JAR_LAUNCH_CLASSPATH="$UNITEX_JAR_LAUNCH_CLASSPATH:$UNITEX_JAR_LAUNCH_FILE_BASEDIR/classes/*"
+  # add UNITEX_JAVA_LAUNCHER_FILE_BASEDIR/classes/*
+  if [ -d "$UNITEX_JAVA_LAUNCHER_FILE_BASEDIR/classes" ]; then
+    UNITEX_JAVA_LAUNCHER_CLASSPATH="$UNITEX_JAVA_LAUNCHER_CLASSPATH:$UNITEX_JAVA_LAUNCHER_FILE_BASEDIR/classes/*"
   fi	
 
-  # add UNITEX_JAR_LAUNCH_FILE_BASEDIR/lib/*
-  if [ -d "$UNITEX_JAR_LAUNCH_FILE_BASEDIR/lib" ]; then
-    UNITEX_JAR_LAUNCH_CLASSPATH="$UNITEX_JAR_LAUNCH_CLASSPATH:$UNITEX_JAR_LAUNCH_FILE_BASEDIR/lib/*"
+  # add UNITEX_JAVA_LAUNCHER_FILE_BASEDIR/lib/*
+  if [ -d "$UNITEX_JAVA_LAUNCHER_FILE_BASEDIR/lib" ]; then
+    UNITEX_JAVA_LAUNCHER_CLASSPATH="$UNITEX_JAVA_LAUNCHER_CLASSPATH:$UNITEX_JAVA_LAUNCHER_FILE_BASEDIR/lib/*"
   fi
 
   # Detect OS
-  unitex_setup_os_type_detection
+  unitex_setup_detect_os_type
 
-  # OSTYPE (re)defined by unitex_setup_os_type_detection
+  # OSTYPE is defined (if not already) by unitex_setup_detect_os_type
   # shellcheck disable=SC2039
   UNITEX_SETUP_OS_IS_CYGWIN=$(case "$OSTYPE" in
     (*cygwin*)   echo "1";;
@@ -118,7 +118,7 @@ unitex_jar_launch_setup_classpath() {
   # Running Java from Cygwin
   # @http://stackoverflow.com/a/16538153/2042871
   if [ "$UNITEX_SETUP_OS_IS_CYGWIN" -ne 0 ]; then
-    UNITEX_JAR_LAUNCH_CLASSPATH=$(cygpath -mp "$UNITEX_JAR_LAUNCH_CLASSPATH")
+    UNITEX_JAVA_LAUNCHER_CLASSPATH=$(cygpath -mp "$UNITEX_JAVA_LAUNCHER_CLASSPATH")
   fi
 }  
 
@@ -127,7 +127,7 @@ unitex_jar_launch_setup_classpath() {
 # =============================================================================
 if [ $# -lt 1 ]
 then
-   echo "./$UNITEX_JAR_LAUNCH_SCRIPT_NAME: wrong arguments"
+   echo "./$UNITEX_JAVA_LAUNCHER_SCRIPT_NAME: wrong arguments"
    usage
 fi
 
@@ -135,45 +135,45 @@ fi
 # Arguments
 # =============================================================================
 # jar file
-UNITEX_JAR_LAUNCH_FILE="$1"
+UNITEX_JAVA_LAUNCHER_FILE="$1"
 shift
 
 # extra parameters
-UNITEX_JAR_LAUNCH_OPTIONS="$*"
+UNITEX_JAVA_LAUNCHER_OPTIONS="$*"
 
 # =============================================================================
 # Get jar filename
 # =============================================================================
-UNITEX_JAR_LAUNCH_FILE_NAME=$(basename -- "$UNITEX_JAR_LAUNCH_FILE")
+UNITEX_JAVA_LAUNCHER_FILE_NAME=$(basename -- "$UNITEX_JAVA_LAUNCHER_FILE")
 
 # =============================================================================
 # Try to resolve the absolute path of the jar file
 # =============================================================================
 # Resolve symlinks snippet from @source http://stackoverflow.com/a/697552/2042871
-while [ -h "$UNITEX_JAR_LAUNCH_FILE" ]; do
-    UNITEX_JAR_LAUNCH_FILE_DIR=$(dirname -- "$UNITEX_JAR_LAUNCH_FILE")
-    UNITEX_JAR_LAUNCH_FILE_SYM=$(readlink   "$UNITEX_JAR_LAUNCH_FILE")
-    UNITEX_JAR_LAUNCH_FILE="$(cd "$UNITEX_JAR_LAUNCH_FILE_DIR"  &&\
-                              cd "$(dirname  -- "$UNITEX_JAR_LAUNCH_FILE_SYM")" &&\
-                             pwd)/$(basename -- "$UNITEX_JAR_LAUNCH_FILE_SYM")"
-done  # [ -h "$UNITEX_JAR_LAUNCH_FILE" ]
+while [ -h "$UNITEX_JAVA_LAUNCHER_FILE" ]; do
+    UNITEX_JAVA_LAUNCHER_FILE_DIR=$(dirname -- "$UNITEX_JAVA_LAUNCHER_FILE")
+    UNITEX_JAVA_LAUNCHER_FILE_SYM=$(readlink   "$UNITEX_JAVA_LAUNCHER_FILE")
+    UNITEX_JAVA_LAUNCHER_FILE="$(cd "$UNITEX_JAVA_LAUNCHER_FILE_DIR"  &&\
+                              cd "$(dirname  -- "$UNITEX_JAVA_LAUNCHER_FILE_SYM")" &&\
+                             pwd)/$(basename -- "$UNITEX_JAVA_LAUNCHER_FILE_SYM")"
+done  # [ -h "$UNITEX_JAVA_LAUNCHER_FILE" ]
 
 # Set-up working directory 
-UNITEX_JAR_LAUNCH_FILE_BASEDIR="$(dirname  -- "$UNITEX_JAR_LAUNCH_FILE")"
+UNITEX_JAVA_LAUNCHER_FILE_BASEDIR="$(dirname  -- "$UNITEX_JAVA_LAUNCHER_FILE")"
 
 # =============================================================================
 # Main
 # =============================================================================
-unitex_setup_java_detection
-unitex_jar_launch_java_not_found_message
-unitex_jar_launch_setup_classpath
+unitex_setup_detect_java
+unitex_java_launcher_print_java_not_found_message
+unitex_java_launcher_setup_classpath
 
 # =============================================================================
 # Launch jar
 # =============================================================================
-cd "$UNITEX_JAR_LAUNCH_FILE_BASEDIR"
+cd "$UNITEX_JAVA_LAUNCHER_FILE_BASEDIR"
 
 # shellcheck disable=SC2086
-$UNITEX_SETUP_COMMAND_JAVA $UNITEX_JAR_LAUNCH_OPTIONS\
-                           -cp  "$UNITEX_JAR_LAUNCH_CLASSPATH"\
-                           -jar "$UNITEX_JAR_LAUNCH_FILE"
+$UNITEX_SETUP_COMMAND_JAVA $UNITEX_JAVA_LAUNCHER_OPTIONS\
+                           -cp  "$UNITEX_JAVA_LAUNCHER_CLASSPATH"\
+                           -jar "$UNITEX_JAVA_LAUNCHER_FILE"

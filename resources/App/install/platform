@@ -83,7 +83,7 @@ UNITEX_SETUP_COMMAND_UNAME=$(      command -v uname                 || echo "")
 # =============================================================================
 # Operating System Detection
 # =============================================================================
-unitex_setup_os_type_detection() {
+unitex_setup_detect_os_type() {
   if [ ! -n "${UNITEX_SETUP_OS_TYPE+1}" ]; then
     # shellcheck disable=SC2039
     if [ -z "$OSTYPE" ]; then
@@ -115,7 +115,7 @@ unitex_setup_os_type_detection() {
 # =============================================================================
 # Architecture Detection
 # =============================================================================
-unitex_setup_arch_type_detection() {
+unitex_setup_detect_arch_type() {
   if [ ! -n "${UNITEX_SETUP_ARCH_TYPE+1}" ]; then
     if [ -z "$ARCHTYPE" ]; then
       if [ ! -z "$UNITEX_SETUP_COMMAND_UNAME" ]; then
@@ -143,7 +143,7 @@ unitex_setup_arch_type_detection() {
 # =============================================================================
 # 32-bit or 64-bit
 # =============================================================================
-unitex_setup_arch_bits_detection() {
+unitex_setup_detect_arch_bits() {
   if [ ! -n "${UNITEX_SETUP_ARCH_BITS+1}" ]; then  
     # A 64-bit CPU could have only installed a 32-bit OS. So do not use `uname -m`
     if [ -z "$ARCHBITS" ]; then
@@ -165,7 +165,7 @@ unitex_setup_arch_bits_detection() {
 # UNITEX_SETUP_JAVA_VENDOR       [ 'other', 'sun', 'open' ]
 # UNITEX_SETUP_COMMAND_JAVA      [ /path/to/bin/java ]
 # =============================================================================
-unitex_setup_java_detection() {
+unitex_setup_detect_java() {
  if [ ! -z "$UNITEX_SETUP_COMMAND_JAVA"  -a\
       ! -n "${UNITEX_SETUP_JAVA_VENDOR+1}" ]; then
    # Working directory snippet from @source http://stackoverflow.com/a/17744637/2042871

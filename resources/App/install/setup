@@ -40,7 +40,7 @@ UNITEX_SETUP_SRC_CORE_BUILD_DIR_NAME="build"           # Core build directory na
 UNITEX_SETUP_SRC_CORE_BIN_DIR_NAME="bin"               # Compiled binaries directory name
 UNITEX_SETUP_PLATFORM_DIR_NAME="platform"              # Setup binaries directory name
 UNITEX_SETUP_INSTALL_DIR_NAME="install"                # Setup install directory name
-UNITEX_SETUP_JAVA_LAUNCH_SCRIPT="java-launch"          # Default install/java-launch
+UNITEX_SETUP_JAVA_LAUNCH_SCRIPT="java-launcher"        # Default install/java-launcher
 UNITEX_SETUP_WORKSPACE_DIR_NAME="workspace"            # Workspace directory name
 UNITEX_WORKSPACE_HOME_NAME="Unitex-Gramlab"            # Default workspace/Unitex-Gramlab
 UNITEX_WORKSPACE_DIR_NAME="Unitex"                     # Default Unitex-Gramlab/Unitex
@@ -148,7 +148,7 @@ unitex_setup_print_binaries_not_found_message() {
 # =============================================================================
 # Java not found message
 # =============================================================================
-unitex_setup_java_not_found_message() {
+unitex_setup_print_java_not_found_message() {
   if [ ! -n "${UNITEX_SETUP_JAVA_VENDOR+1}" ]; then
     echo "$UNITEX_SETUP_LINE_STRING"
     echo "WARNING: In order to run Unitex/GramLab IDEs, you need Java version $UNITEX_SETUP_MINIMAL_JAVA_VERSION_STRING"
@@ -304,7 +304,7 @@ unitex_setup_compile_binaries() {
 # =============================================================================
 # Check if there are precompiled binaries for this platform
 # =============================================================================
-unitex_setup_app_binaries_detection() {
+unitex_setup_detect_app_binaries() {
   # Unitex-Gramlab/App 
   cd "$UNITEX_SETUP_APP_BASEDIR"
 
@@ -339,7 +339,7 @@ unitex_setup_app_binaries_detection() {
 # Create binaries' symbolic links
 # e.g. UnitexToolLogger -> platform/linux-x86_64/UnitexToolLogger
 # =============================================================================
-unitex_setup_app_binaries_links_creation() {
+unitex_setup_create_app_binaries_symbolic_links() {
   cd "$UNITEX_SETUP_APP_BASEDIR"
   if [ ! -z "$UNITEX_SETUP_APP_BINARIES" -a\
          -d "$UNITEX_SETUP_APP_BINARIES" ]; then
@@ -395,27 +395,27 @@ unitex_setup_create_workspace_directories() {
 # =============================================================================
 # Create shell launchers
 # =============================================================================
-unitex_setup_create_shell_launchers() {
-# unitex-ide.sh
-rm -f "$UNITEX_SETUP_APP_BASEDIR/${UNITEX_SHELL_FILE_NAME:?}.sh"
+unitex_setup_change_permissions_shell_launchers() {
+# unitex-ide
+rm -f "$UNITEX_SETUP_APP_BASEDIR/${UNITEX_SHELL_FILE_NAME:?}"
 cat > "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_SHELL_FILE_NAME" <<EOL
 #!/bin/sh
 # =============================================================================
 $UNITEX_SETUP_INSTALL_BASEDIR/$UNITEX_SETUP_JAVA_LAUNCH_SCRIPT $UNITEX_SETUP_APP_BASEDIR/$UNITEX_IDE_JAVA_FILE_NAME
 EOL
 
-# try to add execution permissions to unitex-ide.sh
+# try to add execution permissions to unitex-ide
 chmod a+x "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_SHELL_FILE_NAME"  > /dev/null 2>&1
 
-# gramlab-ide.sh
-rm -f "$UNITEX_SETUP_APP_BASEDIR/${GRAMLAB_SHELL_FILE_NAME:?}.sh"
+# gramlab-ide
+rm -f "$UNITEX_SETUP_APP_BASEDIR/${GRAMLAB_SHELL_FILE_NAME:?}"
 cat > "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_SHELL_FILE_NAME" <<EOL
 #!/bin/sh
 # =============================================================================
 $UNITEX_SETUP_INSTALL_BASEDIR/$UNITEX_SETUP_JAVA_LAUNCH_SCRIPT $UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_IDE_JAVA_FILE_NAME
 EOL
 
-# try to add execution permissions to gramlab-ide.sh
+# try to add execution permissions to gramlab-ide
 chmod a+x "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_SHELL_FILE_NAME"  > /dev/null 2>&1
 }
 
@@ -474,7 +474,7 @@ fi
 # =============================================================================
 # Installation completed message
 # =============================================================================
-unitex_setup_installation_completed_message() {
+unitex_setup_print_installation_completed_message() {
   echo "$UNITEX_SETUP_LINE_STRING"
   echo "Unitex/GramLab installation has successfully been completed!"
   if [ ! -n "${UNITEX_SETUP_JAVA_VENDOR+1}" ]; then
@@ -493,15 +493,15 @@ unitex_setup_installation_completed_message() {
 # Main Setup
 # =============================================================================
 unitex_setup_check_path
-unitex_setup_os_type_detection
-unitex_setup_arch_type_detection
-unitex_setup_arch_bits_detection
-unitex_setup_java_detection
-unitex_setup_java_not_found_message
-unitex_setup_app_binaries_detection
-unitex_setup_app_binaries_links_creation
+unitex_setup_detect_os_type
+unitex_setup_detect_arch_type
+unitex_setup_detect_arch_bits
+unitex_setup_detect_java
+unitex_setup_print_java_not_found_message
+unitex_setup_detect_app_binaries
+unitex_setup_create_app_binaries_symbolic_links
 unitex_setup_create_workspace_directories
-unitex_setup_create_shell_launchers
 unitex_setup_create_freedesktop_entries
-unitex_setup_installation_completed_message
+unitex_setup_change_permissions_shell_launchers
+unitex_setup_print_installation_completed_message
 # =============================================================================

@@ -1,0 +1,73 @@
+#!/bin/sh
+# =============================================================================
+# Unitex/GramLab Unix-like Environments Setup Script
+# https://github.com/UnitexGramLab/unitex-packaging-unix
+# =============================================================================
+# Copyright (C) 2015 Université Paris-Est Marne-la-Vallée <unitex@univ-mlv.fr>
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
+#
+# cristian.martinez@univ-paris-est.fr (martinec)
+# 
+# =============================================================================
+# This shell script must work in any POSIX-like system, including systems without 
+# bash. See this helpful document on writing portable shell scripts:
+# @see http://www.gnu.org/s/hello/manual/autoconf/Portable-Shell.html
+# =============================================================================
+# Script code must be ShellCheck-compliant for information about how to run 
+# ShellCheck locally @see http://www.shellcheck.net/about.html
+# e.g shellcheck -s sh platform
+# =============================================================================
+# shellcheck disable=SC2034
+{
+# =============================================================================
+# Constants Unitex/GramLab
+# =============================================================================
+UNITEX_SETUP_LINE_STRING=$(head -c 80 < /dev/zero | tr '\0' '=' || echo "")
+UNITEX_SETUP_APP_DIR_NAME="App"                        # App binaries directory name
+UNITEX_SETUP_SRC_DIR_NAME="Src"                        # Sources directory name
+UNITEX_SETUP_SRC_CORE_DIR_NAME="C++"                   # Core sources directory name
+UNITEX_SETUP_SRC_CORE_BUILD_DIR_NAME="build"           # Core build directory name
+UNITEX_SETUP_SRC_CORE_BIN_DIR_NAME="bin"               # Compiled binaries directory name
+UNITEX_SETUP_PLATFORM_DIR_NAME="platform"              # Setup binaries directory name
+UNITEX_SETUP_INSTALL_DIR_NAME="install"                # Setup install directory name
+UNITEX_SETUP_WORKSPACE_DIR_NAME="workspace"            # Workspace directory name
+UNITEX_WORKSPACE_HOME_NAME="Unitex-Gramlab"            # Default workspace/Unitex-Gramlab
+# =============================================================================
+# Constants Unitex IDE
+# =============================================================================
+UNITEX_WORKSPACE_DIR_NAME="Unitex"                     # Default Unitex-Gramlab/Unitex
+UNITEX_WORKSPACE_CFG_FILE_NAME=".unitex.cfg"           # Unitex config file name
+UNITEX_IDE_FILE_NAME="Unitex.jar"                      # Unitex IDE executable
+UNITEX_DESKTOP_ENTRY_FILE_PREFIX="unitex-visual-ide"   # Default unitex-visual-ide
+UNITEX_SHELL_FILE_NAME="Unitex"                        # Default Unitex
+UNITEX_DESKTOP_ENTRY_ICON_FILE_NAME="Unitex.ico"       # Default Unitex.ico
+# =============================================================================
+# Constants GramLab IDE
+# =============================================================================
+GRAMLAB_WORKSPACE_DIR_NAME="GramLab"                   # Default Unitex-Gramlab/GramLab
+GRAMLAB_WORKSPACE_CFG_FILE_NAME=".gramlab"             # GramLab config file name
+GRAMLAB_IDE_FILE_NAME="Gramlab.jar"                    # Gramlab IDE executable
+GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX="gramlab-visual-ide" # Default gramlab-ide
+GRAMLAB_SHELL_FILE_NAME="GramLab"                      # Default GramLab
+GRAMLAB_DESKTOP_ENTRY_ICON_FILE_NAME="Unitex.ico"      # Default Unitex.ico
+# =============================================================================
+# Constants Java
+# =============================================================================
+UNITEX_JAVA_DOWNLOAD_URL="http://www.java.com/en/download/manual.jsp"
+UNITEX_JAVA_LAUNCHER_SCRIPT_NAME="java-launcher"       # Default install/java-launcher
+UNITEX_JAVA_MINIMAL_VERSION_STRING="1.7"               # Minimal java version to run IDEs
+# =============================================================================
+}

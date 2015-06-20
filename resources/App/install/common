@@ -1,0 +1,83 @@
+#!/bin/sh
+# =============================================================================
+# Unitex/GramLab Unix-like Environments Setup Script
+# https://github.com/UnitexGramLab/unitex-packaging-unix
+# =============================================================================
+# Copyright (C) 2015 Université Paris-Est Marne-la-Vallée <unitex@univ-mlv.fr>
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
+#
+# cristian.martinez@univ-paris-est.fr (martinec)
+# 
+# =============================================================================
+# This shell script must work in any POSIX-like system, including systems without 
+# bash. See this helpful document on writing portable shell scripts:
+# @see http://www.gnu.org/s/hello/manual/autoconf/Portable-Shell.html
+# =============================================================================
+# Script code must be ShellCheck-compliant for information about how to run 
+# ShellCheck locally @see http://www.shellcheck.net/about.html
+# e.g shellcheck -s sh platform
+# =============================================================================
+# Commands
+# =============================================================================
+# shellcheck disable=SC2034
+{
+UNITEX_HOST_COMMAND_CURL=$(       command -v curl                  || echo "")
+UNITEX_HOST_COMMAND_ARCH=$(       command -v arch                  || echo "")
+UNITEX_HOST_COMMAND_GETCONF=$(    command -v getconf               || echo "")
+UNITEX_HOST_COMMAND_JAVA=$(       command -v "$JAVA_CMD"           ||\
+                                  command -v "$JAVA_BINDIR/java"   ||\
+                                  command -v "$JAVA_ROOT/java"     ||\
+                                  command -v "$JRE_HOME/bin/java"  ||\
+                                  command -v "$JAVA_HOME/bin/java" ||\
+                                  command -v "java"                || echo "")
+UNITEX_HOST_COMMAND_LSB_RELEASE=$(command -v lsb_release           || echo "")
+UNITEX_HOST_COMMAND_MAKE=$(       command -v make                  || echo "")
+UNITEX_HOST_COMMAND_OPEN_URL=$(   command -v "$BROWSER"            ||\
+                                  command -v xdg-open              ||\
+                                  command -v gnome-open            ||\
+                                  command -v x-www-browser         ||\
+                                  command -v firefox               ||\
+                                  command -v chromium-browser      ||\
+                                  command -v cygstart              ||\
+                                  command -v open                  || echo "echo")
+UNITEX_HOST_COMMAND_SH=$(         command -v bash                  ||\
+                                  command -v sh                    || echo "sh")
+UNITEX_HOST_COMMAND_PRINTF=$(     command -v printf                ||\
+                                  command -v /bin/echo             ||\
+                                  command -v /usr/ucb/echo         ||\
+                                  command -v echo                  || echo "echo")
+UNITEX_HOST_COMMAND_UNAME=$(      command -v uname                 || echo "")
+UNITEX_HOST_COMMAND_WGET=$(       command -v wget                  || echo "")
+}
+# =============================================================================
+# Portable echo function
+# @source http://www.etalabs.net/sh_tricks.html
+# =============================================================================
+echo () (
+  fmt=%s end=\\n IFS=" "
+
+  while [ $# -gt 1 ] ; do
+   case "$1" in
+    [!-]*|-*[!ne]*) break;;
+    *ne*|*en*) fmt=%b end=;;
+    *n*) end=;;
+    *e*) fmt=%b;;
+   esac
+   shift
+  done
+
+  $UNITEX_HOST_COMMAND_PRINTF "$fmt$end" "$*"
+)

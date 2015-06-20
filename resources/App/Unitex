@@ -1,0 +1,85 @@
+#!/bin/sh
+# =============================================================================
+# Unitex/GramLab Unix-like Environments Setup Script
+# https://github.com/UnitexGramLab/unitex-packaging-unix
+# =============================================================================
+# Copyright (C) 2015 Université Paris-Est Marne-la-Vallée <unitex@univ-mlv.fr>
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
+#
+# cristian.martinez@univ-paris-est.fr (martinec)
+# 
+# =============================================================================
+# This shell script must work in any POSIX-like system, including systems without 
+# bash. See this helpful document on writing portable shell scripts:
+# @see http://www.gnu.org/s/hello/manual/autoconf/Portable-Shell.html
+# =============================================================================
+# Script code must be ShellCheck-compliant for information about how to run 
+# ShellCheck locally @see http://www.shellcheck.net/about.html
+# e.g shellcheck -s sh Unitex
+# =============================================================================
+# Constants
+# =============================================================================
+UNITEX_LAUNCHER_SCRIPT_NAME=$(basename -- "$0")  # This script name
+UNITEX_SETUP_INSTALL_DIR_NAME="install"          # Setup install directory name
+
+# =============================================================================
+# Script working directory
+# =============================================================================
+# Working directory snippet from @source http://stackoverflow.com/a/17744637/2042871
+UNITEX_LAUNCHER_SCRIPT_FILE=$(cd -P -- "$(dirname -- "$0")" && pwd -P) &&\
+UNITEX_LAUNCHER_SCRIPT_FILE="$UNITEX_LAUNCHER_SCRIPT_FILE/$UNITEX_LAUNCHER_SCRIPT_NAME"
+
+# Resolve symlinks snippet from @source http://stackoverflow.com/a/697552/2042871
+while [ -h "$UNITEX_LAUNCHER_SCRIPT_FILE" ]; do
+    UNITEX_LAUNCHER_SCRIPT_DIR=$(dirname -- "$UNITEX_LAUNCHER_SCRIPT_FILE")
+    UNITEX_LAUNCHER_SCRIPT_SYM=$(readlink   "$UNITEX_LAUNCHER_SCRIPT_FILE")
+    UNITEX_LAUNCHER_SCRIPT_FILE="$(cd "$UNITEX_LAUNCHER_SCRIPT_DIR"  &&\
+                                  cd "$(dirname  -- "$UNITEX_LAUNCHER_SCRIPT_SYM")" &&\
+                                 pwd)/$(basename -- "$UNITEX_LAUNCHER_SCRIPT_SYM")"
+done  # [ -h "$UNITEX_LAUNCHER_SCRIPT_FILE" ]
+
+# Set-up working directory 
+UNITEX_LAUNCHER_SCRIPT_BASEDIR="$(dirname  -- "$UNITEX_LAUNCHER_SCRIPT_FILE")"
+
+# =============================================================================
+# Load launcher configuration
+# =============================================================================
+. "$UNITEX_LAUNCHER_SCRIPT_BASEDIR/$UNITEX_SETUP_INSTALL_DIR_NAME/config"
+
+# =============================================================================
+# java-launcher script
+# Unitex-GramLab/App/install/java-launcher
+# =============================================================================
+JAVA_LAUNCHER_SCRIPT="$UNITEX_LAUNCHER_SCRIPT_BASEDIR/$UNITEX_SETUP_INSTALL_DIR_NAME/$UNITEX_JAVA_LAUNCHER_SCRIPT_NAME"
+
+# =============================================================================
+# Get Unitex IDE (Unitex.jar)
+# =============================================================================
+# $UNITEX_LAUNCHER_SCRIPT_BASEDIR/Unitex.jar
+if   [ -e "$UNITEX_LAUNCHER_SCRIPT_BASEDIR/$UNITEX_IDE_FILE_NAME" ]; then
+  UNITEX_IDE_FILE="$UNITEX_LAUNCHER_SCRIPT_BASEDIR/$UNITEX_IDE_FILE_NAME"
+# ~/Unitex-GramLab/App/Unitex.jar  
+elif [ -e "$HOME/$UNITEX_SETUP_HOME_BASEDIR_NAME/$UNITEX_SETUP_APP_DIR_NAME/$UNITEX_IDE_FILE_NAME" ]; then
+  UNITEX_IDE_FILE="$UNITEX_LAUNCHER_SCRIPT_BASEDIR/$UNITEX_IDE_FILE_NAME"
+# $UNITEX_GRAMLAB_HOME/App/Unitex.jar
+elif [ -e "${UNITEX_GRAMLAB_HOME:-.}/$UNITEX_SETUP_APP_DIR_NAME/$UNITEX_IDE_FILE_NAME" ]; then  
+  UNITEX_IDE_FILE="$UNITEX_SETUP_HOME_BASEDIR/$UNITEX_IDE_FILE_NAME"
+fi
+
+# =============================================================================
+# Lauch Unitex IDE
+# =============================================================================
+$JAVA_LAUNCHER_SCRIPT "${UNITEX_IDE_FILE:-$UNITEX_IDE_FILE_NAME}"

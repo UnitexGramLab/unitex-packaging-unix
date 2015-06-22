@@ -179,20 +179,23 @@ unitex_setup_check_path () {
       $UNITEX_HOST_COMMAND_PRINTF "\r\033[2K [\033[0;31mXX\033[0m] $readme\n" 
     fi   
 
-    echo "$UNITEX_SETUP_LINE_STRING"  
-    echo "Would you like to continue?"
-    while true
-    do
-      $UNITEX_HOST_COMMAND_PRINTF "Please type y to accept, n otherwise: "
-      read yn
-      if test x"$yn" = xn; then
-        unitex_setup_print_support_message
-        exit 1
-        break;
-      elif test x"$yn" = xy; then
-        break;
-      fi
-    done    
+    # avoid failures when interactive input is unavailable
+    if [ -t 0 ]; then
+      echo "$UNITEX_SETUP_LINE_STRING"
+      echo "Would you like to continue?"
+      while true
+      do
+        $UNITEX_HOST_COMMAND_PRINTF "Please type y to accept, n otherwise: "
+        read yn
+        if test x"$yn" = xn; then
+          unitex_setup_print_support_message
+          exit 1
+          break;
+        elif test x"$yn" = xy; then
+          break;
+        fi
+      done
+    fi  # if [ -t 0 ];
   fi  
 }
 
@@ -204,20 +207,22 @@ unitex_setup_compile_binaries() {
   if [   -d "$UNITEX_SETUP_SOURCES_BUILD_PATH" -a\
        ! -z "$UNITEX_HOST_COMMAND_MAKE" ]; then
     
-    echo "Would you like to compile Unitex/GramLab?'"
-    
-    while true
-    do
-      $UNITEX_HOST_COMMAND_PRINTF "Please type y to accept, n otherwise: "
-      read yn
-      if test x"$yn" = xn; then
-        unitex_setup_print_support_message
-        exit 1
-        break;
-      elif test x"$yn" = xy; then
-        break;
-      fi
-    done
+    # avoid failures when interactive input is unavailable
+    if [ -t 0 ]; then
+      echo "Would you like to compile Unitex/GramLab?'"
+      while true
+      do
+        $UNITEX_HOST_COMMAND_PRINTF "Please type y to accept, n otherwise: "
+        read yn
+        if test x"$yn" = xn; then
+          unitex_setup_print_support_message
+          exit 1
+          break;
+        elif test x"$yn" = xy; then
+          break;
+        fi
+      done
+    fi  # if [ -t 0 ];
   
     cd "$UNITEX_SETUP_SOURCES_BUILD_PATH"
 

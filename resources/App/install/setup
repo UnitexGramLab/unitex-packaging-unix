@@ -318,6 +318,9 @@ unitex_setup_detect_app_binaries() {
   if [ -z "$UNITEX_SETUP_APP_BINARIES" ]; then
     unitex_setup_compile_binaries
   fi
+
+  # setup the platform binaries base directory
+  UNITEX_SETUP_PLATFORM_BINARIES_BASEDIR="$UNITEX_SETUP_APP_BASEDIR/$UNITEX_SETUP_APP_BINARIES"
 }
 
 # =============================================================================
@@ -473,6 +476,7 @@ unitex_setup_print_installation_completed_message() {
    $UNITEX_HOST_COMMAND_PRINTF   " \r\033[2K [\033[00;32mOK\033[0m] Java bin directory     : $JAVA_BINDIR\n"
   fi   
   $UNITEX_HOST_COMMAND_PRINTF    " \r\033[2K [\033[00;32mOK\033[0m] Installation directory : $UNITEX_SETUP_HOME_BASEDIR\n"
+  $UNITEX_HOST_COMMAND_PRINTF    " \r\033[2K [\033[00;32mOK\033[0m] Platform binaries      : $UNITEX_SETUP_PLATFORM_BINARIES_BASEDIR\n"
   $UNITEX_HOST_COMMAND_PRINTF    " \r\033[2K [\033[00;32mOK\033[0m] Unitex Workspace       : $UNITEX_WORKSPACE_PATH\n"
   $UNITEX_HOST_COMMAND_PRINTF    " \r\033[2K [\033[00;32mOK\033[0m] GramLab Workspace      : $GRAMLAB_WORKSPACE_PATH\n"
   echo "$UNITEX_SETUP_LINE_STRING"

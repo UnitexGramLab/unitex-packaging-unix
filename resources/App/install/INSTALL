@@ -1,0 +1,40 @@
+# Unitex/GramLab Setup for Unix-like systems 
+
+Unitex/GramLab is an open source, cross-platform, multilingual, 
+lexicon- and grammar-based corpus processing suite. Project home page 
+can be found from: <http://unitexgramlab.org>.
+
+This file covers basic compilation and installation of Unitex/GramLab 
+on Unix-like systems using the [source distribution package](
+http://unitex.univ-mlv.fr/releases/latest-beta/source). For Windows, 
+GNU/Linux and Mac OS X binary installers, please visit our [releases page](
+http://unitex.univ-mlv.fr/releases).
+
+After download the source distribution package, extract it to one folder and 
+go into the directory named ```App/install``` and type:
+
+```
+sh setup
+```
+
+This script will check if the minimal required version of Java is installed, 
+compile the C++ Core sources, setup the Unitex and GramLab workspace directories
+and create some desktop shortcuts. After finish installing, double click in 
+
+```
+App/Unitex
+```
+
+to open the Unitex IDE, or in 
+
+```
+App/GramLab
+```
+
+to open the GramLab IDE.
+
+For complete details and options see the ```README.txt``` file included in
+the root directory of the source distribution package.
+
+---
+Copyright (c) Universite Paris-Est Marne-la-Vallee, 2001-2015

@@ -385,7 +385,6 @@ unitex_setup_create_workspace_directories() {
 unitex_setup_change_permissions_shell_launchers() {
 # create Unitex launcher if doesn't exist
 if [ ! -e "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_SHELL_FILE_NAME" ]; then
-rm -f "$UNITEX_SETUP_APP_BASEDIR/${UNITEX_SHELL_FILE_NAME:?}"
 cat > "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_SHELL_FILE_NAME" <<EOL
 #!/bin/sh
 # =============================================================================
@@ -398,7 +397,6 @@ chmod a+x "$UNITEX_SETUP_APP_BASEDIR/$UNITEX_SHELL_FILE_NAME"  > /dev/null 2>&1
 
 # create GramLab launcher if doesn't exist
 if [ ! -e "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_SHELL_FILE_NAME" ]; then
-rm -f "$UNITEX_SETUP_APP_BASEDIR/${GRAMLAB_SHELL_FILE_NAME:?}"
 cat > "$UNITEX_SETUP_APP_BASEDIR/$GRAMLAB_SHELL_FILE_NAME" <<EOL
 #!/bin/sh
 # =============================================================================

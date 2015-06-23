@@ -52,7 +52,7 @@ UNITEX_WORKSPACE_HOME_NAME="Unitex-GramLab"            # Default workspace/Unite
 UNITEX_WORKSPACE_DIR_NAME="Unitex"                     # Default Unitex-Gramlab/Unitex
 UNITEX_WORKSPACE_CFG_FILE_NAME=".unitex.cfg"           # Unitex config file name
 UNITEX_IDE_FILE_NAME="Unitex.jar"                      # Unitex IDE executable
-UNITEX_DESKTOP_ENTRY_FILE_PREFIX="unitex-visual-ide"   # Default unitex-visual-ide
+UNITEX_DESKTOP_ENTRY_FILE_PREFIX="Unitex"              # Default Unitex
 UNITEX_SHELL_FILE_NAME="Unitex"                        # Default Unitex
 UNITEX_DESKTOP_ENTRY_ICON_FILE_NAME="Unitex.ico"       # Default Unitex.ico
 # =============================================================================
@@ -61,7 +61,7 @@ UNITEX_DESKTOP_ENTRY_ICON_FILE_NAME="Unitex.ico"       # Default Unitex.ico
 GRAMLAB_WORKSPACE_DIR_NAME="GramLab"                   # Default Unitex-Gramlab/GramLab
 GRAMLAB_WORKSPACE_CFG_FILE_NAME=".gramlab"             # GramLab config file name
 GRAMLAB_IDE_FILE_NAME="Gramlab.jar"                    # Gramlab IDE executable
-GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX="gramlab-visual-ide" # Default gramlab-ide
+GRAMLAB_DESKTOP_ENTRY_FILE_PREFIX="GramLab"            # Default GramLab
 GRAMLAB_SHELL_FILE_NAME="GramLab"                      # Default GramLab
 GRAMLAB_DESKTOP_ENTRY_ICON_FILE_NAME="Unitex.ico"      # Default Unitex.ico
 # =============================================================================

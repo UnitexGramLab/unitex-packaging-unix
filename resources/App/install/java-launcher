@@ -56,7 +56,7 @@ UNITEX_JAVA_LAUNCHER_SCRIPT_BASEDIR="$(dirname  -- "$UNITEX_JAVA_LAUNCHER_SCRIPT
 # Load dependencies
 # =============================================================================
 . "$UNITEX_JAVA_LAUNCHER_SCRIPT_BASEDIR/config"
-. "$UNITEX_JAVA_LAUNCHER_SCRIPT_BASEDIR/common"
+. "$UNITEX_JAVA_LAUNCHER_SCRIPT_BASEDIR/command"
 . "$UNITEX_JAVA_LAUNCHER_SCRIPT_BASEDIR/platform"
 
 # =============================================================================

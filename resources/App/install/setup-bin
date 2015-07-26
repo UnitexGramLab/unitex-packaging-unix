@@ -32,44 +32,38 @@
 # =============================================================================
 # Constants
 # =============================================================================
-UNITEX_SETUP_ALL_SCRIPT_NAME=$(basename -- "$0")                 # This script name
+UNITEX_SETUP_BIN_SCRIPT_NAME=$(basename -- "$0")                 # This script name
 # =============================================================================
 # Script working directory
 # =============================================================================
 # Working directory snippet from @source http://stackoverflow.com/a/17744637/2042871
-UNITEX_SETUP_ALL_SCRIPT_FILE=$(cd -P -- "$(dirname -- "$0")" && pwd -P) &&\
-UNITEX_SETUP_ALL_SCRIPT_FILE="$UNITEX_SETUP_ALL_SCRIPT_FILE/$UNITEX_SETUP_ALL_SCRIPT_NAME"
+UNITEX_SETUP_BIN_SCRIPT_FILE=$(cd -P -- "$(dirname -- "$0")" && pwd -P) &&\
+UNITEX_SETUP_BIN_SCRIPT_FILE="$UNITEX_SETUP_BIN_SCRIPT_FILE/$UNITEX_SETUP_BIN_SCRIPT_NAME"
 
 # Resolve symlinks snippet from @source http://stackoverflow.com/a/697552/2042871
-while [ -h "$UNITEX_SETUP_ALL_SCRIPT_FILE" ]; do
-    UNITEX_SETUP_ALL_SCRIPT_DIR=$(dirname -- "$UNITEX_SETUP_ALL_SCRIPT_FILE")
-    UNITEX_SETUP_ALL_SCRIPT_SYM=$(readlink   "$UNITEX_SETUP_ALL_SCRIPT_FILE")
-    UNITEX_SETUP_ALL_SCRIPT_FILE="$(cd "$UNITEX_SETUP_ALL_SCRIPT_DIR"  &&\
-                          cd "$(dirname  -- "$UNITEX_SETUP_ALL_SCRIPT_SYM")" &&\
-                         pwd)/$(basename -- "$UNITEX_SETUP_ALL_SCRIPT_SYM")"
-done  # [ -h "$UNITEX_SETUP_ALL_SCRIPT_FILE" ]
+while [ -h "$UNITEX_SETUP_BIN_SCRIPT_FILE" ]; do
+    UNITEX_SETUP_BIN_SCRIPT_DIR=$(dirname -- "$UNITEX_SETUP_BIN_SCRIPT_FILE")
+    UNITEX_SETUP_BIN_SCRIPT_SYM=$(readlink   "$UNITEX_SETUP_BIN_SCRIPT_FILE")
+    UNITEX_SETUP_BIN_SCRIPT_FILE="$(cd "$UNITEX_SETUP_BIN_SCRIPT_DIR"  &&\
+                    cd "$(dirname  -- "$UNITEX_SETUP_BIN_SCRIPT_SYM")" &&\
+                   pwd)/$(basename -- "$UNITEX_SETUP_BIN_SCRIPT_SYM")"
+done  # [ -h "$UNITEX_SETUP_BIN_SCRIPT_FILE" ]
 
 # Set-up working directory 
-UNITEX_SETUP_ALL_SCRIPT_BASEDIR="$(dirname  -- "$UNITEX_SETUP_ALL_SCRIPT_FILE")"
+UNITEX_SETUP_BIN_SCRIPT_BASEDIR="$(dirname  -- "$UNITEX_SETUP_BIN_SCRIPT_FILE")"
 
 # =============================================================================
 # Load dependencies
 # =============================================================================
-. "$UNITEX_SETUP_ALL_SCRIPT_BASEDIR/common"
+. "$UNITEX_SETUP_BIN_SCRIPT_BASEDIR/common"
 
 # =============================================================================
 # Main Setup
 # =============================================================================
-unitex_setup_check_path
 unitex_setup_detect_os_type
 unitex_setup_detect_arch_type
 unitex_setup_detect_arch_bits
-unitex_setup_detect_java
-unitex_setup_print_java_not_found_message
 unitex_setup_detect_app_binaries
 unitex_setup_create_app_binaries_symbolic_links
-unitex_setup_create_workspace_directories
-unitex_setup_create_freedesktop_entries
-unitex_setup_change_permissions_shell_launchers
-unitex_setup_print_installation_completed_message
+unitex_setup_print_binaries_installation_message
 # =============================================================================

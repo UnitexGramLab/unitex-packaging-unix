@@ -1,7 +1,7 @@
-Unitex/GramLab {{UNITEX_VER_FULL}}
-{{UNITEX_BUILD_DATE}}
+Unitex/GramLab {{UNITEX_VERSION_FULL}}
+{{UNITEX_VERSION_BUILD_DATE}}
 
-Unitex/GramLab is {{UNITEX_DESCRIPTION}}. Project home page can be found from: {{UNITEX_HOMEPAGE_URL}}.
+Unitex/GramLab is {{UNITEX_VERSION_DESCRIPTION}}. Project home page can be found from: {{UNITEX_VERSION_URL_HOMEPAGE}}.
 
 To use this software you need to accept the terms and conditions of the following licenses: 
 

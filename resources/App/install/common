@@ -142,14 +142,14 @@ unitex_setup_print_java_not_found_message() {
 # Check for: 
 # - Unitex-Gramlab/App/install
 # - Unitex-Gramlab/App 
-# - Unitex-Gramlab/README.txt
+# - Unitex-Gramlab/README.md
 # =============================================================================
 unitex_setup_check_path () {
   readonly app=$(basename "$UNITEX_SETUP_APP_BASEDIR")
   readonly app_path="$UNITEX_SETUP_HOME_BASEDIR/$UNITEX_SETUP_APP_DIR_NAME"
   readonly install=$(basename "$UNITEX_SETUP_SCRIPT_BASEDIR")
   readonly install_path="$app_path/$UNITEX_SETUP_INSTALL_DIR_NAME"
-  readonly readme="$UNITEX_SETUP_HOME_BASEDIR/README.txt"
+  readonly readme="$UNITEX_SETUP_HOME_BASEDIR/README.md"
 
   if [ x"$app"     != x"$UNITEX_SETUP_APP_DIR_NAME"     -o \
        x"$install" != x"$UNITEX_SETUP_INSTALL_DIR_NAME" -o \
@@ -172,7 +172,7 @@ unitex_setup_check_path () {
     fi
 
     echo "Tested files:"
-    # Unitex-Gramlab/README.txt
+    # Unitex-Gramlab/README.md
     if [  -e "$readme" ]; then
       $UNITEX_HOST_COMMAND_PRINTF "\r\033[2K [\033[00;32mOK\033[0m] $readme\n" 
     else

@@ -30,7 +30,7 @@ the source distribution package file, go into the directory named
 make install
 ```
 
-For complete details and options see the ```README.txt``` file included in
+For complete details and options see the ```README.md``` file included in
 the root directory of the source distribution package.
 
 ---

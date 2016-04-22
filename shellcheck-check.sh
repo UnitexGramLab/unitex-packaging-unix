@@ -23,7 +23,7 @@ check() {
 find_prunes() {
   local prunes="! -path './.git/*'"
   if [ -f .gitmodules ]; then
-    while read module; do
+    while read -r module; do
       prunes="$prunes ! -path './$module/*'"
     done < <(grep path .gitmodules | awk '{print $3}')
   fi
@@ -36,13 +36,14 @@ find_cmd() {
 
 check_all_executables() {
   echo "Linting all executables and .sh files, ignoring files inside git modules..."
-  eval "$(find_cmd)" | while read script; do
+  eval "$(find_cmd)" | while read -r script; do
     head=$(head -n1 "$script")
-    [[ "$head"   =~ .*ruby.* ]]     && continue
-    [[ "$head"   =~ .*zsh.* ]]      && continue
-    [[ "$head"   =~ ^#compdef.* ]]  && continue
-    [[ "$script" =~ ./makeself/* ]] && continue
-    [[ "$script" =~ ^./mo$ ]]       && continue
+    [[ "$head"   =~ .*ruby.* ]]           && continue
+    [[ "$head"   =~ .*zsh.* ]]            && continue
+    [[ "$head"   =~ ^#compdef.* ]]        && continue
+    [[ "$script" =~ ./makeself/* ]]       && continue
+    [[ "$script" =~ ./unitex-core/.* ]]   && continue 
+    [[ "$script" =~ ^./mo$ ]]             && continue
     check "$script"
   done
 }

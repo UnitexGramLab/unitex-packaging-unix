@@ -38,7 +38,7 @@
 UNITEX_SETUP_LINE_STRING=$(head -c 80 < /dev/zero | tr '\0' '=' || echo "")
 UNITEX_SETUP_APP_DIR_NAME="App"                        # App binaries directory name
 UNITEX_SETUP_SRC_DIR_NAME="Src"                        # Sources directory name
-UNITEX_SETUP_SRC_CORE_DIR_NAME="C++"                   # Core sources directory name
+UNITEX_SETUP_SRC_CORE_DIR_NAME="unitex-core"           # Core sources directory name
 UNITEX_SETUP_SRC_CORE_BUILD_DIR_NAME="build"           # Core build directory name
 UNITEX_SETUP_SRC_CORE_BIN_DIR_NAME="bin"               # Compiled binaries directory name
 UNITEX_SETUP_PLATFORM_DIR_NAME="platform"              # Setup binaries directory name

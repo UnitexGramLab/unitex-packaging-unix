@@ -55,6 +55,7 @@ UNITEX_SETUP_SCTS_SCRIPT_BASEDIR="$(dirname  -- "$UNITEX_SETUP_SCTS_SCRIPT_FILE"
 # =============================================================================
 # Load dependencies
 # =============================================================================
+# shellcheck source=/dev/null
 . "$UNITEX_SETUP_SCTS_SCRIPT_BASEDIR/common"
 
 # =============================================================================

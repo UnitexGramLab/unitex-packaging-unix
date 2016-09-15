@@ -186,7 +186,7 @@ unitex_setup_check_path () {
       while true
       do
         $UNITEX_HOST_COMMAND_PRINTF "Please type y to accept, n otherwise: "
-        read yn
+        read -r yn
         if test x"$yn" = xn; then
           unitex_setup_print_support_message
           exit 1
@@ -213,7 +213,7 @@ unitex_setup_compile_binaries() {
       while true
       do
         $UNITEX_HOST_COMMAND_PRINTF "Please type y to accept, n otherwise: "
-        read yn
+        read -r yn
         if test x"$yn" = xn; then
           unitex_setup_print_support_message
           exit 1
@@ -242,7 +242,7 @@ unitex_setup_compile_binaries() {
       unitex_setup_print_support_message
       exit 1
     else
-      local installation_failed=0
+      installation_failed=0
       echo "$UNITEX_SETUP_LINE_STRING"
       echo "Info: Unitex/GramLab compilation completed successfully"
       

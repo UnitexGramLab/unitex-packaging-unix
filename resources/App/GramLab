@@ -57,6 +57,7 @@ GRAMLAB_LAUNCHER_SCRIPT_BASEDIR="$(dirname  -- "$GRAMLAB_LAUNCHER_SCRIPT_FILE")"
 # =============================================================================
 # Load launcher configuration
 # =============================================================================
+# shellcheck source=/dev/null
 . "$GRAMLAB_LAUNCHER_SCRIPT_BASEDIR/$UNITEX_SETUP_INSTALL_DIR_NAME/config"
 
 # =============================================================================

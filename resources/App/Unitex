@@ -57,6 +57,7 @@ UNITEX_LAUNCHER_SCRIPT_BASEDIR="$(dirname  -- "$UNITEX_LAUNCHER_SCRIPT_FILE")"
 # =============================================================================
 # Load launcher configuration
 # =============================================================================
+# shellcheck source=/dev/null
 . "$UNITEX_LAUNCHER_SCRIPT_BASEDIR/$UNITEX_SETUP_INSTALL_DIR_NAME/config"
 
 # =============================================================================

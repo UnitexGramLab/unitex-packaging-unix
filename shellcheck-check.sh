@@ -6,17 +6,17 @@ set -eo pipefail
 [[ "${DEBUG:-}" ]] && set -x
 
 success() {
-  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] Linting %s...\n" "$1"
+  printf "\\r\\033[2K  [ \\033[00;32mOK\\033[0m ] Linting %s...\\n" "$1"
 }
 
 fail() {
-  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] Linting %s...\n" "$1"
+  printf "\\r\\033[2K  [\\033[0;31mFAIL\\033[0m] Linting %s...\\n" "$1"
   exit 1
 }
 
 check() {
   local script="$1"
-  shellcheck -e SC1090,SC2164,SC2166 "$script" || fail "$script"
+  shellcheck "$script" || fail "$script"
   success "$script"
 }
 
@@ -31,7 +31,7 @@ find_prunes() {
 }
 
 find_cmd() {
-  echo "find . -type f -and \( -perm +111 -or -name '*.sh' \) $(find_prunes)"
+  echo "find . -type f -and \( -name '*.sh' \) $(find_prunes)"
 }
 
 check_all_executables() {
@@ -42,10 +42,13 @@ check_all_executables() {
     [[ "$head"   =~ .*zsh.* ]]            && continue
     [[ "$head"   =~ ^#compdef.* ]]        && continue
     [[ "$script" =~ ./makeself/* ]]       && continue
-    [[ "$script" =~ ./unitex-core/.* ]]   && continue 
+    [[ "$script" =~ ./unitex-core/.* ]] && continue 
     [[ "$script" =~ ^./mo$ ]]             && continue
+    [[ "$script" =~ ^./shellcheck-check.* ]] && continue
     check "$script"
   done
 }
 
-check_all_executables
+if [[ $TRAVIS_OS_NAME != 'osx' ]]; then
+  check_all_executables
+fi
